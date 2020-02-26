@@ -185,13 +185,24 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 		Map<String, Object> dataPlainText = proDecryptData(data+"", aesKey+"", publicKey.toString(),
 				privateKey.toString());
 		// 将数据保存到request里
-		request.setAttribute("uuid",uuid);
-		redisTemplate.opsForValue().set(uuid,dataPlainText);
 		Set<String> keySet = dataPlainText.keySet();
 		for (String key : keySet) {
 			request.setAttribute(key, dataPlainText.get(key));
 		}
+		setBodyData(request,dataPlainText);
 		return true;
+	}
+	
+	/**
+	 * 修改requestBody里的内容
+	 * @throws Exception 
+	* @Description:（方法功能描述） 
+	* 方法返回值: @param request
+	* 方法返回值: @param dataPlainText
+	 */
+	private void setBodyData(HttpServletRequest request, Map<String, Object> dataPlainText) throws Exception {
+		ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+		requestWrapper.updateBody(JsonUtils.objectToJson(dataPlainText));
 	}
 
 	/**

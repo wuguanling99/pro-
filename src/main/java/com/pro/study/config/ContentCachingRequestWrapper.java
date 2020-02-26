@@ -15,7 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-@Component
+
+
 public class ContentCachingRequestWrapper extends HttpServletRequestWrapper {
 
 	private byte[] body;
@@ -49,12 +50,31 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper {
 
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		if (inputStream != null) {
-			return inputStream;
-		}
-		return super.getInputStream();
-	}
 
+		final ByteArrayInputStream bais = new ByteArrayInputStream(body);
+
+        return new ServletInputStream() {
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            public boolean isReady() {
+                return false;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+
+            }
+
+            @Override
+            public int read() throws IOException {
+                return bais.read();
+            }
+        };
+	}
 	@Override
 	public BufferedReader getReader() throws IOException {
 		if (reader == null) {
@@ -92,4 +112,7 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper {
 
 	}
 	
+	public void updateBody(String bodyString) {
+		body = bodyString.getBytes();
+	}
 }

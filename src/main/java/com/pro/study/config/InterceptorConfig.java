@@ -14,8 +14,8 @@ import com.pro.study.interceptor.RSAKeyInterceptor;
  * @Description: 管理所有的interceptor
  */
 @Configuration
-public class InterceptorConfig implements WebMvcConfigurer {
-	
+public class InterceptorConfig  implements WebMvcConfigurer {
+
 	@Autowired
 	private RSAKeyInterceptor rsaKeyInterceptor;
 	

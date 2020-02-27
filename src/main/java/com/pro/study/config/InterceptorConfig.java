@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.pro.study.interceptor.AuthInterceptor;
 import com.pro.study.interceptor.RSAKeyInterceptor;
 
 /**
@@ -18,6 +19,8 @@ public class InterceptorConfig  implements WebMvcConfigurer {
 
 	@Autowired
 	private RSAKeyInterceptor rsaKeyInterceptor;
+	@Autowired
+	private AuthInterceptor authInterceptor;
 	
 	/**
 	 * 先添加的先执行后添加的后执行
@@ -25,5 +28,6 @@ public class InterceptorConfig  implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(rsaKeyInterceptor);
+		registry.addInterceptor(authInterceptor);
 	}
 }

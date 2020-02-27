@@ -1,4 +1,4 @@
-package com.pro.study.dao;
+package com.pro.study.dao.user;
 
 import org.apache.ibatis.annotations.Mapper;
 

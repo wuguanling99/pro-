@@ -35,13 +35,13 @@ import com.pro.study.utils.RSAKeyUtils;
 @Component
 public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 	
-	private static final String redisBodyKey = "redisBody";
 	
 	@Autowired
 	private RedisTemplate redisTemplate;
 
 	/**
-	 * 前置拦截器 1)首先我们要本次请求是否是我们要拦截的请求 如果在不需要权限控制的接口我们直接放行 如果不在需要流量控制的接口范围内我们拦截判断权限
+	 * 前置拦截器 
+	 * 1)首先我们要本次请求是否是我们要拦截的请求 如果在不需要权限控制的接口我们直接放行 如果不在需要流量控制的接口范围内我们拦截判断权限
 	 * 2)解密过程 我们采用的RSA+aes加密 a)前端请求后台拿到RSA公钥 我们把公钥和私钥都保存在Redsi里
 	 * b)前端对数据进行aes加密然后把aes秘钥用我们刚刚发给前端的RSA公钥进行加密 c)前端发送请求回来需要如下格式 d){ "uuid":"xxxx",
 	 * "data":"这里的数据已经经过前端的aes加密", "aesKey":"这里的aesKey已经经过RSA公钥加密"

@@ -12,8 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SysRoleEnum {
-	ADMIN("admin","管理员"),
+	IT_ADMIN("admin","管理员"),
 	CHECK("sheck","审核员"),
+	LOAN_APPLY("loan_apply","贷款申请人"),
+	COMPANY_MANAGER("company_manager","公司管理员"),
 	;
 	private String role;
 	

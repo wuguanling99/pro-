@@ -1,5 +1,8 @@
 package com.pro.study.po;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
 
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -28,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasePojo {
+public class BasePojo implements Serializable {
 	
 	/**
 	 * 主键ID
@@ -43,14 +45,14 @@ public class BasePojo {
 	 */
     @CreatedDate
     @Column(name = "create_time",nullable=false,columnDefinition="datetime COMMENT '数据创建时间'")
-	private DateTime createTime;
+	private Timestamp createTime;
 	
 	/**
 	 * 数据修改时间
 	 */
     @LastModifiedDate
     @Column(name = "update_time",nullable=false,columnDefinition="datetime COMMENT '数据最后更新时间'")
-	private DateTime updateTime;
+	private Timestamp updateTime;
 	
 	/**
 	 * 删除标志位默认是未删除（有效）  0:删除 1:有效

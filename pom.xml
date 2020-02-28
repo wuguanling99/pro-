@@ -81,37 +81,11 @@
 			<artifactId>scrypt</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-
-		<!--Mybatis -->
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.4.5</version>
-
-		</dependency>
-
 		<!--Swagger support -->
 		<dependency>
 			<groupId>com.mangofactory</groupId>
 			<artifactId>swagger-springmvc</artifactId>
 			<version>0.9.5</version>
-		</dependency>
-		<!-- druid数据库连接池 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.0.26</version>
 		</dependency>
 		<!-- redis配置 -->
 		<dependency>

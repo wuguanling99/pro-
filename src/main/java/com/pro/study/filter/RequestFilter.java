@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.pro.study.config.ContentCachingRequestWrapper;
-import com.pro.study.enums.PermitUrlsEnum;
+import com.pro.study.utils.PermitUrlsUtil;
 
 @Component
 @Order(2)
@@ -28,7 +28,7 @@ public class RequestFilter extends OncePerRequestFilter {
 		String requestURI = request.getRequestURI();
 
 		// 判断是否是不需要认证且需要RSA解密的方法
-		if (PermitUrlsEnum.hasPermitUrlAndNeedRsaDecrypt(requestURI)) {
+		if (PermitUrlsUtil.hasNeedDecryPermitUrls(requestURI)) {
 			// 需要解密 request转换 不需要解密 不转换request
 			System.out.println("request拦截器");
 			ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(

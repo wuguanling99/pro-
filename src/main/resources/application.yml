@@ -8,6 +8,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+    tyep: com.alibaba.druid.pool.DruidDataSource
   jpa:
     generate-ddl: true
     show-sql: true

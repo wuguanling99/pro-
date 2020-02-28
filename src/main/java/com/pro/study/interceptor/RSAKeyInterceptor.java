@@ -2,10 +2,8 @@ package com.pro.study.interceptor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,9 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.pro.study.config.ContentCachingRequestWrapper;
-import com.pro.study.enums.PermitUrlsEnum;
 import com.pro.study.utils.AESUtil;
-import com.pro.study.utils.JsonUtils;
+import com.pro.study.utils.JsonUtil;
+import com.pro.study.utils.PermitUrlsUtil;
 import com.pro.study.utils.RSAKeyUtils;
 
 /**
@@ -41,11 +39,10 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 
 	/**
 	 * 前置拦截器 
-	 * 1)首先我们要本次请求是否是我们要拦截的请求 如果在不需要权限控制的接口我们直接放行 如果不在需要流量控制的接口范围内我们拦截判断权限
+	 * 1)首先我们要本次请求是否是我们要拦截的请求 如果在不需要解密的接口我们直接放行 如果不需要解密的接口范围也放行 如果是需要解密的接口进行解密 如果都不是返回404
 	 * 2)解密过程 我们采用的RSA+aes加密 a)前端请求后台拿到RSA公钥 我们把公钥和私钥都保存在Redsi里
 	 * b)前端对数据进行aes加密然后把aes秘钥用我们刚刚发给前端的RSA公钥进行加密 c)前端发送请求回来需要如下格式 d){ "uuid":"xxxx",
 	 * "data":"这里的数据已经经过前端的aes加密", "aesKey":"这里的aesKey已经经过RSA公钥加密"
-	 * 
 	 * } e)我们后台从redis里拿到对应的公钥私钥 f)我们首先用私钥解密aeskey拿到对应的aesKey的明文
 	 * g)我们再用aesKey对data里的数据进行解密
 	 * 
@@ -53,38 +50,26 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		System.out.println("权限校验开始");
 		String requestURI = request.getRequestURI();
-		if (PermitUrlsEnum.hasPermitUrls(requestURI)) {
-			// 判断是否是不需要认证且需要RSA解密的方法
-			if (PermitUrlsEnum.hasPermitUrlAndNeedRsaDecrypt(requestURI)) {
-				return DecryRequest(request, response);
-			} else {
-				// 剩下的接口是不需要认证的接口直接放行
-				return true;
-			}
-		} else {
-			// 判断权限即token是否存在
-			String header = request.getHeader("token");
-			// 如果token为空那么也拦截请求
-			if (StringUtils.isEmpty(header)) {
-				return false;
-			} else {
-				// 验证token是否有效
-				// 如果有效那么放行
-				return true;
-			}
+		if (PermitUrlsUtil.hasPassUrls(requestURI)) {
+			// 判断是否是不是可以直接放行的url
+			return true;
+		} else if(PermitUrlsUtil.hasDontNeedDecryPermitUrls(requestURI)){
+			//判断是不是不需要解密的url
+			return true;
+		}else if (PermitUrlsUtil.hasNeedDecryPermitUrls(requestURI)) {
+			//判断是不是需要解密的url
+			return DecryRequest(request, response);
+		}else {
+			//不是系统的url
+			//直接返回404 没有接口
+			response.setContentType("text/plain");
+			response.getWriter().write("error url");
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			return false;
 		}
 	}
-
-	/**
-	 * 后置拦截器
-	 */
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-			@Nullable ModelAndView modelAndView) throws Exception {
-	}
-
+	
 	/**
 	 * 
 	 * @throws IOException
@@ -119,7 +104,7 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 		// 2)用解密后的aesKey明文对data里的数据进行解密
 		String dataPlainText = AESUtil.decrypt(data, aesKeyPlainText);
 		// 3)将解密后的数据返回
-		Map dataMap = JsonUtils.jsonToPojo(dataPlainText, Map.class);
+		Map dataMap = JsonUtil.jsonToPojo(dataPlainText, Map.class);
 		return dataMap;
 	}
 
@@ -142,7 +127,7 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 		} else if (content_type.equals("application/json")) {
 			String bodyString = getRequestBody(request);
 			//拿到了body里的内容后我们将其转换成map
-			Map bodyMap = JsonUtils.jsonToPojo(bodyString, Map.class);
+			Map bodyMap = JsonUtil.jsonToPojo(bodyString, Map.class);
 			Object uuid=bodyMap.get("uuid");
 			Object data=bodyMap.get("data");
 			Object aesKey=bodyMap.get("aesKey");
@@ -202,7 +187,7 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 	 */
 	private void setBodyData(HttpServletRequest request, Map<String, Object> dataPlainText) throws Exception {
 		ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-		requestWrapper.updateBody(JsonUtils.objectToJson(dataPlainText));
+		requestWrapper.updateBody(JsonUtil.objectToJson(dataPlainText));
 	}
 
 	/**

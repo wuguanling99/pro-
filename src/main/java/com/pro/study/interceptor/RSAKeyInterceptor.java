@@ -51,17 +51,14 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String requestURI = request.getRequestURI();
-		if (PermitUrlsUtil.hasPassUrls(requestURI)) {
-			// 判断是否是不是可以直接放行的url
-			return true;
-		} else if(PermitUrlsUtil.hasDontNeedDecryPermitUrls(requestURI)){
+		if(PermitUrlsUtil.hasDontNeedDecryPermitUrls(requestURI)){
 			//判断是不是不需要解密的url
 			return true;
 		}else if (PermitUrlsUtil.hasNeedDecryPermitUrls(requestURI)) {
 			//判断是不是需要解密的url
 			return DecryRequest(request, response);
 		}else {
-			//不是系统的url
+			//不是系统的url--既不是系统可以直接放行的url 又不是需要解密的url 也不是不需要解密的url
 			//直接返回404 没有接口
 			response.setContentType("text/plain");
 			response.getWriter().write("error url");

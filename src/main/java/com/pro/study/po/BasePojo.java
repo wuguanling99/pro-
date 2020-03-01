@@ -8,12 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotBlank;
 
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import com.pro.study.enums.SysDicEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,22 +40,19 @@ public class BasePojo implements Serializable {
 	/**
 	 * 数据创建时间
 	 */
-    @CreatedDate
-    @Column(name = "create_time",nullable=false,columnDefinition="datetime COMMENT '数据创建时间'")
+    @Column(name = "create_time",insertable = false,nullable=false,columnDefinition="datetime default CURRENT_TIMESTAMP COMMENT '数据创建时间'")
 	private Timestamp createTime;
 	
 	/**
 	 * 数据修改时间
 	 */
-    @LastModifiedDate
-    @Column(name = "update_time",nullable=false,columnDefinition="datetime COMMENT '数据最后更新时间'")
+    @Column(name = "update_time",nullable=false,insertable = false,columnDefinition="datetime  default CURRENT_TIMESTAMP COMMENT '数据最后更新时间'")
 	private Timestamp updateTime;
 	
 	/**
 	 * 删除标志位默认是未删除（有效）  0:删除 1:有效
 	 */
-    @NotBlank(message = "系统字段不能为空")
-    @Column(name = "delete_flag",nullable=false,columnDefinition="int(1)  COMMENT '假删除标识0:删除 1:有效'")
-    private Integer deleteFlag=SysDicEnum.SYS_VALID.getCode();
+    @Column(name = "delete_flag",insertable = false,nullable=false,columnDefinition="int(1) default 0 COMMENT '假删除标识0:删除 1:有效'")
+    private Integer deleteFlag;
 
 }

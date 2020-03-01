@@ -1,4 +1,4 @@
-package com.pro.study.vo.user;
+package com.pro.study.vo.request.user;
 
 import lombok.Data;
 

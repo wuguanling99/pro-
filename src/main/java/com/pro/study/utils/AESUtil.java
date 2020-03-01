@@ -165,8 +165,8 @@ public class AESUtil {
        }
      }
     public static void main(String[] args) {
-		String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVBJPCcxsCF3/fii3TLBWP5wGUb/kyYSZT7nkwsj7yHuTtsp+MZs4Xg57G4Isq09zPPTEgZPUUsbxS21r96yrCr3uSvOmR13U6HyeT/49X6LFiL6nBylYwm7akv8j6Mz8dliJ8zBoe9q6+BIZWUJktOOYiF5PMiNirQKyIm1k6ewIDAQAB";
-		String dataPlainText= "{\"sites\":{\"site\":[{\"id\":\"1\",\"name\":\"菜鸟教程\",\"url\":\"www.runoob.com\"},{\"id\":\"2\",\"name\":\"菜鸟工具\",\"url\":\"c.runoob.com\"},{\"id\":\"3\",\"name\":\"Google\",\"url\":\"www.google.com\"}]}}";
+		String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCReb0eYWfs7zCdA0Kznip1+xhcfBrMC9WAWfSHuqbirVlslrV6q9e1OldqUapfGST/ZJqhfEt6miY6CjfkCAi+mnPZWLUyjLoMsx/LAD4U6DHVG2fwqgbPUL+UrWWRAS8Gztw6P/oqTMygHCe7GU7yXjEwPRap3DzXdbLdCeeBCwIDAQAB";
+		String dataPlainText= "{\"username\":\"wgl\",\"password\":\"1234\"}";
 		//生成一个RESkey对其加密
 		String keyPlainText = getKey();
 		//利用RSA工具对aesKey其进行加密

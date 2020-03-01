@@ -12,7 +12,21 @@ public interface RoleService {
 	* @Description:（获取所有的接口对应的url和权限） 
 	* 方法返回值: @return
 	 */
-	Set<Map<String, List<String>>> getAllRoleAndUrlAuth();
+	Map<String, List<String>> getAllRoleAndUrlAuth();
+	
+	/**
+	 * 
+	* @Description:（获取所有需要解密的url） 
+	* 方法返回值: @return
+	 */
+	List<String> getNeedDecryPermitUrls();
+	
+	/**
+	 * 
+	* @Description:（获取所有不需要解密的url） 
+	* 方法返回值: @return
+	 */
+	List<String> getDontNeedDecryPermitUrls();
 
 
 }

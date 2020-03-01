@@ -26,7 +26,6 @@ public class RequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		String requestURI = request.getRequestURI();
-
 		// 判断是否是不需要认证且需要RSA解密的方法
 		if (PermitUrlsUtil.hasNeedDecryPermitUrls(requestURI)) {
 			// 需要解密 request转换 不需要解密 不转换request

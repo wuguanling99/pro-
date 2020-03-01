@@ -6,7 +6,9 @@ import javax.persistence.Table;
 
 import com.pro.study.po.BasePojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** 
 * @author: wgl
@@ -18,6 +20,8 @@ import lombok.Data;
 @Data
 @Table(name = "pro_role")
 @org.hibernate.annotations.Table(appliesTo = "pro_role",comment = "角色表")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProRole extends BasePojo{
 
 	@Column(name = "role_name",nullable=false,columnDefinition="varchar(255) COMMENT '角色名'")

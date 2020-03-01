@@ -1,6 +1,7 @@
 package com.pro.study.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +10,12 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.pro.study.service.role.RoleService;
+import com.pro.study.enums.SysRoleEnum;
+import com.pro.study.vo.response.user.UserInfoVO;
+
+import io.jsonwebtoken.Claims;
 
 /** 
 * @author: wgl
@@ -25,30 +27,18 @@ import com.pro.study.service.role.RoleService;
 public class PermitUrlsUtil {
 	
 	
-	@Autowired
-	private static RoleService roleService;
-	
-	public static RoleService getRoleService() {
-		return roleService;
-	}
-	@Autowired(required=false)
-	public void setTorganRelationService(
-		@Qualifier("roleService")RoleService roleService) {
-		PermitUrlsUtil.roleService = roleService;
-	}
-	
 	
 	//不需要权限认证可以直接放行的接口
-	private static Set<String>  passUrlList = new HashSet<String>();
+	private static List<String>  passUrlList = new ArrayList<String>();
 	
 	//角色set可以访问的接口---查询出数据库里所有的角色保存在这里
-	private Set<Map<String,List<String>>> roleUrlSet = new HashSet<Map<String,List<String>>>();
+	private static Map<String,List<String>> roleUrlList = new HashMap<String,List<String>>();
 	
 	//不需要解密的url
 	private static List<String>  dontNeedDecryptList = new ArrayList<String>();
 	
 	//需要解密的url
-	private static List<String>  needDecryPermitList = new ArrayList<String>();
+	private static List<String>  needDecryptList = new ArrayList<String>();
 	
 	
 	/**
@@ -58,7 +48,7 @@ public class PermitUrlsUtil {
 	* 方法返回值: @return
 	 */
 	public static boolean hasNeedDecryPermitUrls(String url) {
-		if(ArrayUtils.contains(needDecryPermitList.toArray(), url)) {
+		if(ArrayUtils.contains(needDecryptList.toArray(), url)) {
 			return true;
 		}else {
 			return false;
@@ -92,7 +82,32 @@ public class PermitUrlsUtil {
 			return false;
 		}
 	}
+	/**
+	 * 
+	* @Description:（封装静态roleUrlList资源的方法--所有角色和角色对应的url） 
+	* 方法返回值: @param roleUrlList
+	 */
+	public static void setRoleUrls(Map<String, List<String>> authUrlList) {
+		roleUrlList = authUrlList;
+	}
 	
+	/**
+	 * 
+	* @Description:（封装静态资源的方法） 
+	* 方法返回值: @param roleUrlList
+	 */
+	public static void setDontNeedDecryptList(List<String> roleUrlList) {
+		dontNeedDecryptList = roleUrlList;
+	}
+	
+	/**
+	 * 
+	* @Description:（封装静态资源的方法） 
+	* 方法返回值: @param roleUrlList
+	 */
+	public static void setNeedDecryptList(List<String> roleUrlList) {
+		needDecryptList = roleUrlList;
+	}
 
 	/**
 	 * 
@@ -102,12 +117,27 @@ public class PermitUrlsUtil {
 	 * 方法返回值: @return
 	 */
 	public static boolean authCheck(String requestURI, String token, HttpServletRequest request) {
-		// TODO Auto-generated method stub
+		List<String> passRoleList = roleUrlList.get(SysRoleEnum.PASSROLE.getRole());
+		if(token==null&&ArrayUtils.contains(passRoleList.toArray(),requestURI)) {
+			return true;
+		}
+		Set<String> roleNameSet = roleUrlList.keySet();
+		//解密token----拿到对应的角色信息
+		UserInfoVO userInfo = JWTUtil.parseJWT(token);
+		String roleName = userInfo.getRole();
+		List<String> urlLists = roleUrlList.get(roleName);
+		if(ArrayUtils.contains(urlLists.toArray(),requestURI)) {
+			return true;
+		}
 		return false;
 	}
-	
-	
-    public static void init() { 
-		Set<Map<String,List<String>>> roleSet = roleService.getAllRoleAndUrlAuth();
-    } 
+	/**
+	 * 
+	* @Description:（封装所有可以直接通过的url） 
+	* 方法返回值: @param roleUrlList2
+	 */
+	public static void setPassUrls(List<String> passUrls) {
+		passUrlList = passUrls;
+	}
+
 }

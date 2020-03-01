@@ -18,8 +18,17 @@ import lombok.Getter;
 public enum SysDicEnum {
 
 	//====删除=====
-	SYS_DELETE(0,"删除"),
-	SYS_VALID(1,"有效"),
+	SYS_VALID(0,"有效"),
+	SYS_DELETE(1,"删除"),
+	//====response 枚举 =======
+	SUCCESS(0,"请求成功"),
+	ERROR(1,"请求失败"),
+	USERNAMEORPASSWORDERROR(2,"用户或密码错误"),
+	HAS_USER(1,"用户已存在"),
+	SYS_ERROR(1,"系统异常"),
+	//=========接口权限========
+	DONTNEED(0,"不需要"),
+	NEED(1,"需要"),
 	;
 
 	private Integer code;

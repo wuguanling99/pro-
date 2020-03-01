@@ -16,4 +16,6 @@ public interface UserRepository extends JpaSpecificationExecutor<User>, CrudRepo
 
 	User findByUsername(String username);
 
+	User findByUsernameAndPassword(String username, String scrypt);
+
 }

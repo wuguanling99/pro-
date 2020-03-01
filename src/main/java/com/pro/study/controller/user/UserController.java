@@ -1,23 +1,18 @@
 package com.pro.study.controller.user;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pro.study.enums.SysDicEnum;
 import com.pro.study.service.user.UserService;
-import com.pro.study.utils.RandomValidateCodeUtil;
-import com.pro.study.vo.ValidateCodeVO;
-import com.pro.study.vo.user.LoginResponseVO;
-import com.pro.study.vo.user.UserLoginVO;
-import com.pro.study.vo.user.UserVO;
+import com.pro.study.vo.request.user.CreateUserInfoVO;
+import com.pro.study.vo.request.user.UserLoginVO;
+import com.pro.study.vo.response.sys.SysResponseVO;
+import com.pro.study.vo.response.user.LoginResponseVO;
 
 
 /** 
@@ -42,34 +37,23 @@ public class UserController{
 	* 方法返回值: @return
 	 */
 	@PostMapping("/login")
-	public LoginResponseVO login(@Validated UserLoginVO loginVo) {
-		return userService.login(loginVo);
+	public LoginResponseVO login(@Validated @RequestBody UserLoginVO loginVo) {
+		try {
+			return userService.login(loginVo);
+		}catch (Exception e) {
+			return new LoginResponseVO(SysDicEnum.ERROR.getCode(),"",SysDicEnum.ERROR.getMessage());
+		}
 	}
 	
 	
 	/**
 	 * 
 	* @Description:（申请贷款人创建） 
-	* 方法返回值: @param user
-	* 方法返回值: @param request
-	* 方法返回值: @throws IOException
+	* 方法返回值: @param map
 	 */
-	@PostMapping("/createUser")
-	public void createUser(HttpServletRequest request,@RequestBody UserVO map) {
-	}
-	
-	/**
-	 * 
-	* @Description:（获取图形验证码） 
-	* 方法返回值: @param user
-	* 方法返回值: @param request
-	* 方法返回值: @throws IOException
-	 */
-	@GetMapping("/createValidateCode")
-	public ValidateCodeVO createValidateCode() {
-		RandomValidateCodeUtil randomValidateCodeUtil = new RandomValidateCodeUtil();
-		Map<String, String> randcode = randomValidateCodeUtil.getRandcode();
-		return new ValidateCodeVO(randcode.get("num"),randcode.get("pic"));
+	@PostMapping("/createLoanApplicant")
+	public SysResponseVO createUser(@Validated @RequestBody CreateUserInfoVO user) {
+		return userService.createLoanApplicant(user);
 	}
 	
 }

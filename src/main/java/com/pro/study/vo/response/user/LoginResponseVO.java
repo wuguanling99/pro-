@@ -1,4 +1,8 @@
-package com.pro.study.vo.user;
+package com.pro.study.vo.response.user;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** 
 * @author: wgl
@@ -6,10 +10,15 @@ package com.pro.study.vo.user;
 * @version:1.0
 * @Description: 登陆返回的实体
 */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginResponseVO {
 	
 	private Integer code;
 	
 	private String token;
+	
+	private String name;
 
 }

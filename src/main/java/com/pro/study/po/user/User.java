@@ -26,6 +26,11 @@ import lombok.Data;
 @org.hibernate.annotations.Table(appliesTo = "pro_user",comment = "用户表")
 public class User extends BasePojo{
 	
+	/**
+	 * 用户姓名
+	 */
+	@Column(name = "role_id",nullable=false,columnDefinition="bigint(255) COMMENT '角色id'")
+	private Long roleId;
 	
 	/**
 	 * 用户姓名
@@ -44,6 +49,22 @@ public class User extends BasePojo{
 	 */
 	@Column(name = "password",nullable=false,columnDefinition="varchar(255) COMMENT '密码'")
 	private String password;
+
+	/**
+	 * 身份证号
+	 */
+	@Column(name = "id_card",unique = true,nullable=false,columnDefinition="varchar(255) COMMENT '身份证号'")
+	private String idCard;
 	
+	/**
+	 * 邮箱
+	 */
+	@Column(name = "email",nullable=false,columnDefinition="varchar(255) COMMENT '邮箱'")
+	private String email;
 	
+	/**
+	 * 手机号
+	 */
+	@Column(name = "phone_number",nullable=false,columnDefinition="varchar(255) COMMENT '手机号'")
+	private String phoneNumber;
 }

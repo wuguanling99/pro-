@@ -2,10 +2,10 @@ package com.pro.study.config;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.pro.study.enums.SysRoleEnum;
@@ -17,6 +17,8 @@ public class UtilConfig implements InitializingBean{
 
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {

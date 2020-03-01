@@ -30,6 +30,8 @@ public class AuthTest {
 		ProAuth getKeyUrl = new ProAuth(null,SysRoleEnum.PASSROLE.getRole(),"/key/getRSAKey",SysDicEnum.DONTNEED.getCode(),SysDicEnum.DONTNEED.getCode());
 		ProAuth createUserUrl = new ProAuth(null,SysRoleEnum.PASSROLE.getRole(),"/user/createLoanApplicant",SysDicEnum.DONTNEED.getCode(),SysDicEnum.NEED.getCode());
 		ProAuth login = new ProAuth(null,SysRoleEnum.PASSROLE.getRole(),"/user/login",SysDicEnum.DONTNEED.getCode(),SysDicEnum.NEED.getCode());
+		ProAuth logout = new ProAuth(null,SysRoleEnum.LOAN_APPLY.getRole(),"/user/logout",SysDicEnum.NEED.getCode(),SysDicEnum.DONTNEED.getCode());
+		authRepository.save(logout);
 		authRepository.save(login);
 		authRepository.save(getKeyUrl);
 		authRepository.save(createUserUrl);

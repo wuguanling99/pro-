@@ -1,5 +1,7 @@
 package com.pro.study.controller.user;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
+import com.pro.study.vo.response.user.LogoutResponseVO;
 
 
 /** 
@@ -43,6 +46,12 @@ public class UserController{
 		}catch (Exception e) {
 			return new LoginResponseVO(SysDicEnum.ERROR.getCode(),"",SysDicEnum.ERROR.getMessage());
 		}
+	}
+	
+	@PostMapping("/logout")
+	public LogoutResponseVO logout(HttpServletRequest request) {
+		String token = request.getHeader("token");
+		return userService.logout(token);
 	}
 	
 	

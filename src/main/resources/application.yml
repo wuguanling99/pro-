@@ -23,6 +23,6 @@ spring:
 server:  port: 8090
 
 rsatime: 60000
-
+tokentime: 60000
 rateLimitNumber: 10
   

@@ -2,7 +2,6 @@ package com.pro.study.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,12 +9,12 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.pro.study.enums.SysRoleEnum;
 import com.pro.study.vo.response.user.UserInfoVO;
-
-import io.jsonwebtoken.Claims;
 
 /** 
 * @author: wgl
@@ -26,6 +25,12 @@ import io.jsonwebtoken.Claims;
 @Component
 public class PermitUrlsUtil {
 	
+	private static RedisTemplate redisTemplate;
+
+    @Autowired
+    public void setRedisTemplate(RedisTemplate redisTemplate) {
+        PermitUrlsUtil.redisTemplate = redisTemplate;
+    }
 	
 	
 	//不需要权限认证可以直接放行的接口
@@ -123,7 +128,8 @@ public class PermitUrlsUtil {
 		}
 		Set<String> roleNameSet = roleUrlList.keySet();
 		//解密token----拿到对应的角色信息
-		UserInfoVO userInfo = JWTUtil.parseJWT(token);
+		String jwtToken =redisTemplate.opsForValue().get(token).toString();
+		UserInfoVO userInfo = JWTUtil.parseJWT(jwtToken);
 		String roleName = userInfo.getRole();
 		List<String> urlLists = roleUrlList.get(roleName);
 		if(ArrayUtils.contains(urlLists.toArray(),requestURI)) {

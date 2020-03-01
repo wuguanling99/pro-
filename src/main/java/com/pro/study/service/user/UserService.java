@@ -4,6 +4,7 @@ import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
+import com.pro.study.vo.response.user.LogoutResponseVO;
 
 /** 
 * @author: wgl
@@ -28,5 +29,13 @@ public interface UserService {
 	* 方法返回值: @return
 	 */
 	SysResponseVO createLoanApplicant(CreateUserInfoVO user);
+	
+	/**
+	 * 
+	* @Description:（登出） 
+	* 方法返回值: @param token
+	* 方法返回值: @return
+	 */
+	LogoutResponseVO logout(String token);
 
 }

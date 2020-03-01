@@ -1,9 +1,12 @@
 package com.pro.study.serviceimpl.user;
 
-import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.lambdaworks.crypto.SCryptUtil;
@@ -15,11 +18,13 @@ import com.pro.study.po.role.ProRole;
 import com.pro.study.po.user.User;
 import com.pro.study.service.user.UserService;
 import com.pro.study.utils.JWTUtil;
+import com.pro.study.utils.RSAKeyUtils;
 import com.pro.study.utils.ResponseUtils;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
+import com.pro.study.vo.response.user.LogoutResponseVO;
 import com.pro.study.vo.response.user.UserInfoVO;
 
 /** 
@@ -31,12 +36,17 @@ import com.pro.study.vo.response.user.UserInfoVO;
 @Service
 public class UserServiceImpl implements UserService {
 	
+	@Value("${tokentime}")
+	private Integer tokentime;
+	
 	@Autowired
 	private UserRepository userMapper;
 	@Autowired
 	private ProRoleRepository roleMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	/**
-	 * 将用户传过来的用户类和数据库的数据进行对比密码需要用Base64转码
+	 * 登陆
 	 * @throws Exception 
 	 */
 	@Override
@@ -58,7 +68,9 @@ public class UserServiceImpl implements UserService {
 			userInfoVO.setRole(proRole.getRoleName());
 			userInfoVO.setUserId(user.getId());
 			String createJWT = JWTUtil.createJWT(userInfoVO);
-			loginResponseVO.setToken(createJWT);
+			String uuidTokenKey = UUID.randomUUID().toString();
+			redisTemplate.opsForValue().set(uuidTokenKey, createJWT,tokentime,TimeUnit.SECONDS);
+			loginResponseVO.setToken(uuidTokenKey);
 			return loginResponseVO;
 		}else {
 			LoginResponseVO loginResponseVO = new LoginResponseVO();
@@ -66,7 +78,10 @@ public class UserServiceImpl implements UserService {
 			return loginResponseVO;
 		}
 	}
-
+	
+	/**
+	 * 创建申贷人
+	 */
 	@Override
 	public SysResponseVO createLoanApplicant(CreateUserInfoVO userVO) {
 		User user = new User();
@@ -92,6 +107,19 @@ public class UserServiceImpl implements UserService {
 			return ResponseUtils.returnSysError();
 		}
 		return ResponseUtils.returnSuccess();
+	}
+	
+	/**
+	 * 登出
+	 */
+	@Override
+	public LogoutResponseVO logout(String token) {
+		try {
+			redisTemplate.delete(token);
+			return new LogoutResponseVO(SysDicEnum.SUCCESS.getCode(),"登出成功"); 
+		}catch (Exception e) {
+			return  new LogoutResponseVO(SysDicEnum.ERROR.getCode(),SysDicEnum.ERROR.getMessage());
+		}
 	}
 
 }

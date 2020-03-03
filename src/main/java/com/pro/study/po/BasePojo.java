@@ -35,7 +35,7 @@ public class BasePojo implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id",columnDefinition="bigint(255) COMMENT '主键id,主键自增'")
-	private Long id;
+	protected Long id;
 	
 	/**
 	 * 数据创建时间

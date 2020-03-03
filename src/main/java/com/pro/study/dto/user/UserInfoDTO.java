@@ -1,4 +1,4 @@
-package com.pro.study.vo.response.user;
+package com.pro.study.dto.user;
 
 import lombok.Data;
 /**
@@ -9,12 +9,26 @@ import lombok.Data;
 * @Description: 用户VO
  */
 @Data
-public class UserInfoVO {
+public class UserInfoDTO {
 	
+	/**
+	 * 用户id
+	 */
 	private Long userId;
 	
+	/**
+	 * 姓名
+	 */
 	private String name;
 	
+	/**
+	 * 角色
+	 */
 	private String role;
+	
+	/**
+	 * roleid
+	 */
+	private Long roleId;
 
 }

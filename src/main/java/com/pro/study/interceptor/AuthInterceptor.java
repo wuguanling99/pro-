@@ -29,6 +29,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		String requestURI = request.getRequestURI();
 		String token = request.getHeader("token");
 		//判断是否是需要权限验证的接口
+		if(PermitUrlsUtil.hasPassUrls(requestURI)) {
+			return true;
+		}
 		if(PermitUrlsUtil.authCheck(requestURI,token,request)) {
 			//权限认证成功
 			return true;

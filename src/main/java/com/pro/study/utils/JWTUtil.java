@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.pro.study.vo.response.user.UserInfoVO;
+import com.pro.study.dto.user.UserInfoDTO;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -19,7 +19,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JWTUtil {
 	
 	
-	private static String keyt = UUID.randomUUID().toString();
+	private static String keyt = "com.pro.study";
 	
 	/**
      * 解密
@@ -27,11 +27,11 @@ public class JWTUtil {
      * @param base64Security
      * @return
      */
-    public static UserInfoVO parseJWT(String jsonWebToken) {
+    public static UserInfoDTO parseJWT(String jsonWebToken) {
         try {
-        	return (UserInfoVO) JsonUtil.jsonToPojo(JsonUtil.objectToJson(Jwts.parser()
+        	return (UserInfoDTO) JsonUtil.jsonToPojo(JsonUtil.objectToJson(Jwts.parser()
                     .setSigningKey(keyt.getBytes())
-                    .parseClaimsJws(jsonWebToken).getBody()),UserInfoVO.class);
+                    .parseClaimsJws(jsonWebToken).getBody()),UserInfoDTO.class);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -45,7 +45,7 @@ public class JWTUtil {
      * @return
      * @throws Exception 
      */
-    public static String createJWT(UserInfoVO user) throws Exception {
+    public static String createJWT(UserInfoDTO user) throws Exception {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         //添加构成JWT的参数
         JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT")
@@ -56,7 +56,7 @@ public class JWTUtil {
     }
 
     public static void main(String[] args) throws Exception {
-    	UserInfoVO userInfoVO = new UserInfoVO();
+    	UserInfoDTO userInfoVO = new UserInfoDTO();
     	userInfoVO.setName("吴冠霖");
     	userInfoVO.setRole("admin");
         //密钥

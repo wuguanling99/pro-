@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.SysRoleEnum;
-import com.pro.study.vo.response.user.UserInfoVO;
 
 /** 
 * @author: wgl
@@ -129,7 +129,7 @@ public class PermitUrlsUtil {
 		Set<String> roleNameSet = roleUrlList.keySet();
 		//解密token----拿到对应的角色信息
 		String jwtToken =redisTemplate.opsForValue().get(token).toString();
-		UserInfoVO userInfo = JWTUtil.parseJWT(jwtToken);
+		UserInfoDTO userInfo = JWTUtil.parseJWT(jwtToken);
 		String roleName = userInfo.getRole();
 		List<String> urlLists = roleUrlList.get(roleName);
 		if(ArrayUtils.contains(urlLists.toArray(),requestURI)) {

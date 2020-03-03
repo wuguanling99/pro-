@@ -29,6 +29,8 @@ public enum SysDicEnum {
 	//=========接口权限========
 	DONTNEED(0,"不需要"),
 	NEED(1,"需要"),
+	//===========目录=========
+	SYS_PARENT_MENU(0,"根目录id")
 	;
 
 	private Integer code;

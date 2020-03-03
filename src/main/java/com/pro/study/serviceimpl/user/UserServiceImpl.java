@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.lambdaworks.crypto.SCryptUtil;
 import com.pro.study.dao.role.ProRoleRepository;
 import com.pro.study.dao.user.UserRepository;
+import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.SysDicEnum;
 import com.pro.study.enums.SysRoleEnum;
 import com.pro.study.po.role.ProRole;
@@ -25,7 +26,6 @@ import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
-import com.pro.study.vo.response.user.UserInfoVO;
 
 /** 
 * @author: wgl
@@ -63,11 +63,12 @@ public class UserServiceImpl implements UserService {
 			loginResponseVO.setName(user.getName());
 			//查询用户对应的权限
 			ProRole proRole = roleMapper.findById(user.getRoleId()).get();
-			UserInfoVO userInfoVO = new UserInfoVO();
-			userInfoVO.setName(user.getName());
-			userInfoVO.setRole(proRole.getRoleName());
-			userInfoVO.setUserId(user.getId());
-			String createJWT = JWTUtil.createJWT(userInfoVO);
+			UserInfoDTO userInfoDTO = new UserInfoDTO();
+			userInfoDTO.setName(user.getName());
+			userInfoDTO.setRole(proRole.getRoleName());
+			userInfoDTO.setUserId(user.getId());
+			userInfoDTO.setRoleId(proRole.getId());
+			String createJWT = JWTUtil.createJWT(userInfoDTO);
 			String uuidTokenKey = UUID.randomUUID().toString();
 			redisTemplate.opsForValue().set(uuidTokenKey, createJWT,tokentime,TimeUnit.SECONDS);
 			loginResponseVO.setToken(uuidTokenKey);

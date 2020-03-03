@@ -165,7 +165,7 @@ public class AESUtil {
        }
      }
     public static void main(String[] args) {
-		String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCReb0eYWfs7zCdA0Kznip1+xhcfBrMC9WAWfSHuqbirVlslrV6q9e1OldqUapfGST/ZJqhfEt6miY6CjfkCAi+mnPZWLUyjLoMsx/LAD4U6DHVG2fwqgbPUL+UrWWRAS8Gztw6P/oqTMygHCe7GU7yXjEwPRap3DzXdbLdCeeBCwIDAQAB";
+		String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChlE4WfVagCrK3Z4iJkgxky66x5QCc2nZ2jEi5KHKKzuzcAcmwZ5uiNiGBGWVRtkOfqQtrQlb1iS/pytUVvKpvT+jFEFhm2WKgznXih7XLZlH4qTzPr3Yrr7QrFaR1qbddF8UmkyRN2OgPiKGCz8W5wYVTfM6rNiYGImus6UtLywIDAQAB";
 		String dataPlainText= "{\"username\":\"wgl\",\"password\":\"1234\"}";
 		//生成一个RESkey对其加密
 		String keyPlainText = getKey();

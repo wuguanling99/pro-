@@ -6,7 +6,9 @@ import javax.persistence.Table;
 
 import com.pro.study.po.BasePojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** 
 * @author: wgl
@@ -18,7 +20,9 @@ import lombok.Data;
 @Entity
 @Table(name = "menu")
 @org.hibernate.annotations.Table(appliesTo = "menu",comment = "目录表")
+@NoArgsConstructor
 public class Menu extends BasePojo{
+	
 	
 	@Column(name = "pid",nullable=false,columnDefinition="bigint(255) COMMENT '子父节点标识'")
 	private Long pid;
@@ -31,5 +35,16 @@ public class Menu extends BasePojo{
 	
 	@Column(name = "role_id",nullable=false,columnDefinition="bigint(255) COMMENT '角色id'")
 	private Long roleId;
+
+	public Menu(Long pid, String menuName, String menuUrl, Long roleId) {
+		super();
+		super.id = id;
+		this.pid = pid;
+		this.menuName = menuName;
+		this.menuUrl = menuUrl;
+		this.roleId = roleId;
+	}
+	
+	
 
 }

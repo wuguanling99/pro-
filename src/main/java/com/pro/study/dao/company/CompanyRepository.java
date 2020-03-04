@@ -4,8 +4,7 @@ package com.pro.study.dao.company;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
-import com.pro.study.po.role.ProRole;
-import com.pro.study.po.user.User;
+import com.pro.study.po.company.Company;
 /**
  * 
 * @author: wgl
@@ -13,7 +12,7 @@ import com.pro.study.po.user.User;
 * @version:1.0
 * @Description: company数据接口层
  */
-public interface CompanyRepository extends JpaSpecificationExecutor<ProRole>, CrudRepository<ProRole, Long> {
+public interface CompanyRepository extends JpaSpecificationExecutor<Company>, CrudRepository<Company, Long> {
 
 
 }

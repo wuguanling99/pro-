@@ -20,8 +20,11 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+  http:
+    multipart:
+      maxFileSize: 100Mb
+      maxRequestSize: 100Mb
 server:  port: 8090
-
 rsatime: 60000
 tokentime: 60000
 rateLimitNumber: 10

@@ -1,7 +1,14 @@
 package com.pro.study.controller.conpany;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.pro.study.service.company.CompanyService;
+import com.pro.study.vo.response.company.CompanyResponseVO;
 
 
 /** 
@@ -14,7 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/company")
 public class CompanyController{
 	
+	@Autowired
+	private CompanyService companyService;
 	
+	@GetMapping("/getCompany")
+	public CompanyResponseVO getCompanyByUser() {
+		//根据用户获取公司
+		return companyService.geCompanyList();
+	} 
 	
 	
 	

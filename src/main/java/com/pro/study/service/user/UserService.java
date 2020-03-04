@@ -1,8 +1,13 @@
 package com.pro.study.service.user;
 
+import java.text.ParseException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
+import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
 
@@ -37,5 +42,14 @@ public interface UserService {
 	* 方法返回值: @return
 	 */
 	LogoutResponseVO logout(String token);
+	
+	
+	/**
+	 * 
+	* @Description:（获取用户基本信息的方法） 
+	* 方法返回值: @param request
+	* 方法返回值: @return
+	 */
+	LoanApplyTableUserBaseInfoVO getBaseUserInfo(HttpServletRequest request) throws ParseException;
 
 }

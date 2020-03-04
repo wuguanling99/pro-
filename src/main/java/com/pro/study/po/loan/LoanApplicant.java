@@ -53,6 +53,12 @@ public class LoanApplicant extends BasePojo{
 	@Column(name = "id_card_location",nullable=false,columnDefinition="varchar(255) COMMENT '身份证地址'")
 	private String idCardLocation;
 	
+	/**
+	 * 现居地址
+	 */
+	@Column(name = "now_location",nullable=false,columnDefinition="varchar(255) COMMENT '现居地址'")
+	private String nowLocation;
+	
 	
 	/**
 	 * 婚姻信息

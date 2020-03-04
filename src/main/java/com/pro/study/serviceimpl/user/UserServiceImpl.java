@@ -1,7 +1,11 @@
 package com.pro.study.serviceimpl.user;
 
+import java.text.ParseException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +22,16 @@ import com.pro.study.enums.SysRoleEnum;
 import com.pro.study.po.role.ProRole;
 import com.pro.study.po.user.User;
 import com.pro.study.service.user.UserService;
+import com.pro.study.utils.ETLUtil;
+import com.pro.study.utils.IdCardUtil;
 import com.pro.study.utils.JWTUtil;
 import com.pro.study.utils.RSAKeyUtils;
 import com.pro.study.utils.ResponseUtils;
+import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
+import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
 
@@ -40,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	private Integer tokentime;
 	
 	@Autowired
-	private UserRepository userMapper;
+	private UserRepository userRepository;
 	@Autowired
 	private ProRoleRepository roleMapper;
 	@Autowired
@@ -54,7 +62,7 @@ public class UserServiceImpl implements UserService {
 		String password = loginVo.getPassword();
 		String username = loginVo.getUsername();
 		//登陆验证
-		User user = userMapper.findByUsername(username);
+		User user = userRepository.findByUsername(username);
 		String userPassword = SCryptUtil.scrypt(password, 32768, 8, 1);
 		//校验账户名密码
 		if(user != null && SCryptUtil.check(password, user.getPassword())) {
@@ -89,7 +97,7 @@ public class UserServiceImpl implements UserService {
 		/**
 		 * 先校验用户名是否存在
 		 */
-		User userByUserName = userMapper.findByUsername(userVO.getUsername());
+		User userByUserName = userRepository.findByUsername(userVO.getUsername());
 		if(userByUserName!=null) {
 			//证明已经存在的用户
 			return ResponseUtils.createResponse(SysDicEnum.HAS_USER);
@@ -101,7 +109,7 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(SCryptUtil.scrypt(user.getPassword(), 32768, 8, 1));
 		user.setRoleId(loanApply.getId());
 		try {
-			userMapper.save(user);
+			userRepository.save(user);
 		}catch (Exception e) {
 			//保存的时候发生错误
 			//返回系统异常
@@ -121,6 +129,26 @@ public class UserServiceImpl implements UserService {
 		}catch (Exception e) {
 			return  new LogoutResponseVO(SysDicEnum.ERROR.getCode(),SysDicEnum.ERROR.getMessage());
 		}
+	}
+	
+	/**
+	 * 获取用户基本信息
+	 * @throws ParseException 
+	 */
+	@Override
+	public LoanApplyTableUserBaseInfoVO getBaseUserInfo(HttpServletRequest request) throws ParseException {
+		LoanApplyTableUserBaseInfoVO result = new LoanApplyTableUserBaseInfoVO();
+		UserInfoDTO user = UserUtils.getUser(request);
+		Long userId = user.getUserId();
+		User userPo = userRepository.findById(userId).get();
+		//过滤敏感信息
+		result.setIdCard(ETLUtil.etlIdCard(userPo.getIdCard()));
+		result.setName(userPo.getName());
+		result.setEmail(userPo.getEmail());
+		result.setPhoneNumber(ETLUtil.etlPhoneNumber(userPo.getPhoneNumber()));
+		result.setAge(IdCardUtil.getAge(userPo.getIdCard()));
+		result.setSexByEnum(IdCardUtil.getSex(userPo.getIdCard()));
+		return result;
 	}
 
 }

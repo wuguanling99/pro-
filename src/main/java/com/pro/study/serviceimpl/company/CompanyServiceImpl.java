@@ -4,20 +4,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.pro.study.dao.company.CompanyMybaitsDao;
 import com.pro.study.dao.company.CompanyProductLinkRepository;
 import com.pro.study.dao.company.CompanyRepository;
 import com.pro.study.dao.product.ProductRepository;
 import com.pro.study.dto.company.CompanyDto;
+import com.pro.study.dto.company.CompanyLoanerLocationDto;
+import com.pro.study.dto.company.LocationMapDto;
 import com.pro.study.dto.company.ProductDto;
+import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.po.company.Company;
 import com.pro.study.po.company.CompanyProductLink;
 import com.pro.study.po.product.Product;
 import com.pro.study.service.company.CompanyService;
+import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.response.company.CompanyResponseVO;
+import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 
 /** 
 * @author: wgl
@@ -36,6 +45,9 @@ public class CompanyServiceImpl implements CompanyService{
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private CompanyMybaitsDao companyDao;
 	
 	/**
 	 * 获取公司信息
@@ -66,6 +78,25 @@ public class CompanyServiceImpl implements CompanyService{
 		}
 		//获取公司对应的产品列表
 		//封装数据
+		return result;
+	}
+	
+	/**
+	 * 获取贷款人分布地图
+	 */
+	@Override
+	public LoanerLocationMapResponseVO getLocationMap(HttpServletRequest request) {
+		LoanerLocationMapResponseVO result = new LoanerLocationMapResponseVO();
+		UserInfoDTO user = UserUtils.getUser(request);
+		List<CompanyLoanerLocationDto> loanerLocation = companyDao.getLonerLocationMapByCompanyId(user.getCompanyId());
+		result.setCode(HttpStatus.OK.value());
+		List<LocationMapDto> data = new ArrayList<LocationMapDto>();
+		for (CompanyLoanerLocationDto companyLoanerLocationDto : loanerLocation) {
+			LocationMapDto locationMapDto = new LocationMapDto();
+			BeanUtils.copyProperties(companyLoanerLocationDto, locationMapDto);
+			data.add(locationMapDto);
+		}
+		result.setLocationData(data);
 		return result;
 	}
 

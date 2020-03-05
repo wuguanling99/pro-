@@ -16,7 +16,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SysDicEnum {
-
+	//=====上传成功====
+	OSS_UPLOAD_SUCCESS(0,"上传成功"),
+	OSS_UPLOAD_FAILD(1,"上传失败"),
 	//====删除=====
 	SYS_VALID(0,"有效"),
 	SYS_DELETE(1,"删除"),

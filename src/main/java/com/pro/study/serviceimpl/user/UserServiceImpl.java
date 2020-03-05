@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService {
 			userInfoDTO.setRole(proRole.getRoleName());
 			userInfoDTO.setUserId(user.getId());
 			userInfoDTO.setRoleId(proRole.getId());
+			userInfoDTO.setCompanyId(user.getCompanyId());
 			String createJWT = JWTUtil.createJWT(userInfoDTO);
 			String uuidTokenKey = UUID.randomUUID().toString();
 			redisTemplate.opsForValue().set(uuidTokenKey, createJWT,tokentime,TimeUnit.SECONDS);

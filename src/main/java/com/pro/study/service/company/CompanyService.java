@@ -1,6 +1,9 @@
 package com.pro.study.service.company;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.pro.study.vo.response.company.CompanyResponseVO;
+import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 
 /** 
 * @author: wgl
@@ -16,5 +19,13 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	CompanyResponseVO geCompanyList();
+	
+	/**
+	 * 
+	* @Description:（获取贷款人分布地图） 
+	* 方法返回值: @param request
+	* 方法返回值: @return
+	 */
+	LoanerLocationMapResponseVO getLocationMap(HttpServletRequest request);
 
 }

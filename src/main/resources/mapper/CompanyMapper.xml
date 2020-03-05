@@ -1,8 +1,20 @@
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.mapper.UserMapper">
-    <select id="findAllUser" resultType="User">
-        select id,name from user where id = 1;
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.company.CompanyMybaitsDao">
+    <select id="getLonerLocationMapByCompanyId" resultType="com.pro.study.dto.company.CompanyLoanerLocationDto">
+    	SELECT COUNT(id) AS total,`native_province` AS province 
+        native_city AS city,
+		FROM `loan_applicant_form`
+		WHERE id IN
+		    (SELECT loan_order.user_id
+		    FROM 
+		        (SELECT link.product_id
+		        FROM `company` company
+		        LEFT JOIN `company_product_link` link
+		            ON company.id = link.product_id
+		        WHERE company_id = #{companyId}) a
+		        LEFT JOIN `loan_order` loan_order
+		            ON a.product_id = loan_order.`product_id` )
+		    GROUP BY  `native_city`
     </select>
 </mapper>

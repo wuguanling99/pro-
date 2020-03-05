@@ -51,7 +51,7 @@ public class Product extends BasePojo{
 	/**
 	 * 放款额度
 	 */
-	@Column(name = "product_quota",columnDefinition="int(20) COMMENT '放款额度")
+	@Column(name = "product_quota",columnDefinition="int(20) COMMENT '放款额度'")
 	private Integer quota;
 	
 }

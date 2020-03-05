@@ -27,8 +27,12 @@ public class UserInfoDTO {
 	private String role;
 	
 	/**
-	 * roleid
+	 * 角色id
 	 */
 	private Long roleId;
 
+	/**
+	 * 公司id
+	 */
+	private Long companyId;
 }

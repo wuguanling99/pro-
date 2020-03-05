@@ -2,8 +2,11 @@ package com.pro.study.service.loan_aypply;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
+import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 
 /** 
 * @author: wgl
@@ -20,5 +23,13 @@ public interface LoanApplyService {
 	* 方法返回值: @return
 	 */
 	CreateLoanApplyTableResponseVO createLoanApplyTable(LoanApplyTableRequestVO loanApplyTable,HttpServletRequest request);
+	
+	/**
+	 * 
+	* @param file 
+	 * @Description:（图片上传） 
+	* 方法返回值: @return
+	 */
+	ImageResponseVO uploadImage(MultipartFile file);
 
 }

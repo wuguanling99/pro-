@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pro.study.service.loan_aypply.LoanApplyService;
 import com.pro.study.service.user.UserService;
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
+import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 
 /** 
@@ -45,10 +48,23 @@ public class LoanApplyController {
 	public LoanApplyTableUserBaseInfoVO getLoanApplyUserInfo(HttpServletRequest request) throws ParseException {
 		return userService.getBaseUserInfo(request);
 	}
-	
+		
+	/**
+	 * 
+	* @Description:（创建贷款申请表） 
+	* 方法返回值: @param loanApplyTable
+	* 方法返回值: @param request
+	* 方法返回值: @return
+	 */
 	@PostMapping("/createLoanApplyTable")
 	public CreateLoanApplyTableResponseVO createLoanOrder(@Validated @RequestBody LoanApplyTableRequestVO loanApplyTable,
 			HttpServletRequest request) {
 		return loanApplyServoce.createLoanApplyTable(loanApplyTable,request);
+	}
+	
+	
+	@PostMapping("/uploadImage")
+	public ImageResponseVO  uploadImage(@RequestParam("file") MultipartFile file) {
+		return loanApplyServoce.uploadImage(file);
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.study.service.company.CompanyService;
 import com.pro.study.vo.response.company.CompanyResponseVO;
+import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 
 
 /** 
@@ -24,12 +25,25 @@ public class CompanyController{
 	@Autowired
 	private CompanyService companyService;
 	
-	@GetMapping("/getCompany")
-	public CompanyResponseVO getCompanyByUser() {
+	/**
+	 * 
+	* @Description:（获取公司产品信息） 
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getCompanyProductInfo")
+	public CompanyResponseVO getCompanyProductInfo() {
 		//根据用户获取公司
 		return companyService.geCompanyList();
 	} 
 	
-	
-	
+	/**
+	 * 
+	* @Description:（获取贷款人城市分布的接口） 
+	* 方法返回值: @param request
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getLocationMap")
+	public LoanerLocationMapResponseVO getLocationMap(HttpServletRequest request) {
+		return companyService.getLocationMap(request);
+	}
 }

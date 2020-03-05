@@ -67,4 +67,10 @@ public class User extends BasePojo{
 	 */
 	@Column(name = "phone_number",nullable=false,columnDefinition="varchar(255) COMMENT '手机号'")
 	private String phoneNumber;
+	
+	/**
+	 * 公司id
+	 */
+	@Column(name = "company_id",columnDefinition="bigint(255) COMMENT '公司id'")
+	private Long companyId;
 }

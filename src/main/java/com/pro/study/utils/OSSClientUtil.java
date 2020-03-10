@@ -33,23 +33,23 @@ public class OSSClientUtil {
     public static final Logger logger = LoggerFactory.getLogger(OSSClientUtil.class);
 
 
-    private String endpoint = "oss-cn-shanghai.aliyuncs.com";
+    private String endpoint = "oss-cn-shenzhen.aliyuncs.com";
     /**
      * accessKey
      */
-    private String accessKeyId = "自己的accessKeyId";
+    private String accessKeyId = "LTAI4FgeYy8AQ8VChvVR2wGZ";
     /**
      * accessKeySecret
      */
-    private String accessKeySecret = "自己的accessKeySecret";
+    private String accessKeySecret = "I0JsGYu7kHr9ZIdHsYQCRubc8nGIQI";
     /**
      * 空间
      */
-    private String bucketName = "创建的bucket";
+    private String bucketName = "pro-risk-control";
     /**
      * 文件存储目录
      */
-    private String filedir = "文件存储目录";
+    private String filedir = "loan_user_image";
 
     private OSS ossClient;
 

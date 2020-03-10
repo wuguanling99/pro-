@@ -1,9 +1,13 @@
 package com.pro.study.service.company;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
+import com.pro.study.vo.response.product.ProductResponseVO;
 
 /** 
 * @author: wgl
@@ -27,5 +31,13 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	LoanerLocationMapResponseVO getLocationMap(HttpServletRequest request);
+	
+	/**
+	 * 
+	* @Description:（获取产品列表） 
+	* 方法返回值: @param user
+	* 方法返回值: @return
+	 */
+	List<ProductResponseVO> getProductInfo(UserInfoDTO user);
 
 }

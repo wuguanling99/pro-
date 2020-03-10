@@ -2,6 +2,7 @@ package com.pro.study.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /** 
 * @author: wgl
@@ -35,4 +36,54 @@ public enum RiskCheckEnum {
 	private String message;	
 	
 	private String errorMsg;
+	
+	
+	public static String getMessageByCode(Integer code) {
+		if(code == CHECK_TO_BE_AUDITED.getCode()) {
+			return CHECK_TO_BE_AUDITED.getMessage();
+		}
+		if(code == CHECK_BEGIN.getCode()) {
+			return CHECK_BEGIN.getMessage();
+		}
+		if(code == CHECK_ALLOW_INTO_BEGIN.getCode()) {
+			return CHECK_ALLOW_INTO_BEGIN.getMessage();
+		}
+		if(code == CHECK_ALLOW_INTO_ING.getCode()) {
+			return CHECK_ALLOW_INTO_ING.getMessage();
+		}
+		if(code == CHECK_ALLOW_INTO_OVER.getCode()) {
+			return CHECK_ALLOW_INTO_OVER.getMessage();
+		}
+		if(code == CHECK_PCS_BEGIN.getCode()) {
+			return CHECK_PCS_BEGIN.getMessage();
+		}
+		if(code == CHECK_PCS_ING.getCode()) {
+			return CHECK_PCS_ING.getMessage();
+		}
+		if(code == CHECK_PCS_OVER.getCode()) {
+			return CHECK_PCS_OVER.getMessage();
+		}
+		if(code == CHECK_MODEL_BEGIN.getCode()) {
+			return CHECK_MODEL_BEGIN.getMessage();
+		}
+		if(code == CHECK_MODEL_ING.getCode()) {
+			return CHECK_MODEL_ING.getMessage();
+		}
+		if(code == CHECK_MODEL_OVER.getCode()) {
+			return CHECK_MODEL_OVER.getMessage();
+		}
+		if(code == CHECK_PER_TO_BE_READ.getCode()) {
+			return CHECK_PER_TO_BE_READ.getMessage();
+		}
+		if(code == CHECK_PER_READED.getCode()) {
+			return CHECK_PER_READED.getMessage();
+		}
+		if(code == CHECK_PER_OVER.getCode()) {
+			return CHECK_PER_OVER.getMessage();
+		}
+		if(code == CHECK_OVER.getCode()) {
+			return CHECK_OVER.getMessage();
+		}
+		return null;
+	}
 }

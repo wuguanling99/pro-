@@ -14,6 +14,7 @@ import com.pro.study.enums.SysDicEnum;
 import com.pro.study.service.user.UserService;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserLoginVO;
+import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
@@ -59,11 +60,13 @@ public class UserController{
 	/**
 	 * 
 	* @Description:（申请贷款人创建） 
-	* 方法返回值: @param map
+	* 方法返回值: @param CreateUserInfoVO
 	 */
 	@PostMapping("/createLoanApplicant")
 	public SysResponseVO createUser(@Validated @RequestBody CreateUserInfoVO user) {
 		return userService.createLoanApplicant(user);
 	}
 	
+	
+
 }

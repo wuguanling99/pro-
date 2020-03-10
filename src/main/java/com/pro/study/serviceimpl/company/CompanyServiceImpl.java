@@ -1,5 +1,6 @@
 package com.pro.study.serviceimpl.company;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.pro.study.service.company.CompanyService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
+import com.pro.study.vo.response.product.ProductResponseVO;
 
 /** 
 * @author: wgl
@@ -36,6 +38,8 @@ import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 */
 @Service
 public class CompanyServiceImpl implements CompanyService{
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Autowired
 	private CompanyRepository companyRepository;
@@ -97,6 +101,31 @@ public class CompanyServiceImpl implements CompanyService{
 			data.add(locationMapDto);
 		}
 		result.setLocationData(data);
+		return result;
+	}
+	
+	/**
+	 * 获取产品信息
+	 */
+	@Override
+	public List<ProductResponseVO> getProductInfo(UserInfoDTO user) {
+		List<ProductResponseVO> result = new ArrayList<ProductResponseVO>();
+		//公司id
+		Long companyId = user.getCompanyId();
+		Company company = companyRepository.findById(companyId).get();
+		//根据公司Id查询所有的产品信息
+		List<CompanyProductLink> comopanyProductLinkList = companyProductRepository.findByCompanyId(companyId);
+		//拿到所有的公司订单信息
+		for (CompanyProductLink index : comopanyProductLinkList) {
+			Product product = productRepository.findById(index.getProductId()).get();
+			ProductResponseVO data = new ProductResponseVO();
+			data.setProductId(index.getProductId());
+			data.setProductName(product.getProductName());
+			data.setCreateDate(sdf.format(product.getCreateTime()));
+			//TODO 查询每个产品对应的申请人总数和放款总金额
+			//添加数据到result
+			result.add(data);
+		}
 		return result;
 	}
 

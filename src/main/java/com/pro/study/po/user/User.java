@@ -73,4 +73,10 @@ public class User extends BasePojo{
 	 */
 	@Column(name = "company_id",columnDefinition="bigint(255) COMMENT '公司id'")
 	private Long companyId;
+	
+	/**
+	 * 头像
+	 */
+	@Column(name = "head_image",columnDefinition="varchar(500) COMMENT '头像url'")
+	private String headImage;
 }

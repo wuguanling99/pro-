@@ -1,5 +1,7 @@
 package com.pro.study.controller.conpany;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.study.service.company.CompanyService;
+import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
+import com.pro.study.vo.response.product.ProductResponseVO;
 
 
 /** 
@@ -35,6 +39,18 @@ public class CompanyController{
 		//根据用户获取公司
 		return companyService.geCompanyList();
 	} 
+	
+	
+	/**
+	 * 
+	* @Description:（获取产品列表） 
+	* 方法返回值: @param request
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getProductInfo")
+	public List<ProductResponseVO> getProductInfo(HttpServletRequest request) {
+		return companyService.getProductInfo(UserUtils.getUser(request));
+	}
 	
 	/**
 	 * 

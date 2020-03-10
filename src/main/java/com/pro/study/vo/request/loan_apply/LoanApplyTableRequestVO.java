@@ -1,6 +1,6 @@
 package com.pro.study.vo.request.loan_apply;
 
-import javax.persistence.Column;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,89 +18,27 @@ import lombok.NoArgsConstructor;
 public class LoanApplyTableRequestVO {
 
 	/**
-	 * 申请人姓名
+	 * 个人基本信息
 	 */
-	private String applicantName;
+	private PerInfoVO perinfo;
 	
 	/**
-	 * 性别
+	 * 贷款信息
 	 */
-	private Integer sex;
+	private LoanInfoVO loanInfo;
 	
 	/**
-	 * 身份证号
+	 * 银行卡信息
 	 */
-	private String idCard;
-	
+	private List<BankCardInfo> bankCardList;
+		
+	/**
+	 * 信用卡信息
+	 */
+	private List<CreditCardInfo> creditCardList;
 	
 	/**
-	 * 身份证居住地址
+	 * 联系人信息
 	 */
-	private String idCardLocation;
-	
-	/**
-	 * 现据地
-	 */
-	private String nowLocation;
-	
-	
-	/**
-	 * 婚姻信息
-	 */
-	private Integer marryInfo;
-	
-	
-	/**
-	 * 邮政编码
-	 */
-	private String postalCode;
-
-
-	/**
-	 * 供养人数
-	 */
-	private Integer supportNum;
-	
-	
-	/**
-	 * 教育程度
-	 */
-	private Integer edu;
-	
-	/**
-	 * 住房类型
-	 */
-	private Integer houseType;
-
-
-	/**
-	 * 手机号
-	 */
-	private String phoneNum;
-	
-	
-	/**
-	 * email
-	 */
-	private String eMail;
-
-	/**
-	 * 籍贯省
-	 */
-	private String nativeProvince;
-	
-	/**
-	 * 籍贯市
-	 */
-	private String nativeCity;
-	
-	/**
-	 * 籍贯区
-	 */
-	private String nativeArea;
-	
-	/**
-	 * 社保号
-	 */
-	private String socialNum;
+	private List<LinkPerInfo> linkPerInfoList;
 }

@@ -17,9 +17,9 @@ import lombok.Data;
 */
 @Entity
 @Data
-@Table(name = "loan_applicant_form")
-@org.hibernate.annotations.Table(appliesTo = "loan_applicant_form",comment = "贷款申请表")
-public class LoanApplicant extends BasePojo{
+@Table(name = "loan_applicant_per_info")
+@org.hibernate.annotations.Table(appliesTo = "loan_applicant_per_info",comment = "贷款申请表个人信息")
+public class LoanApplicantPerInfo extends BasePojo{
 	
 	
 	/**
@@ -124,5 +124,23 @@ public class LoanApplicant extends BasePojo{
 	 */
 	@Column(name = "social_num",nullable=false,columnDefinition="varchar(255) COMMENT '社保号'")
 	private String socialNum;
+	
+	/**
+	 * 申请金额
+	 */
+	@Column(name = "apply_amount",nullable=false,columnDefinition="int(50) COMMENT '申请金额'")
+	private Integer applyAmount;
+	
+	/**
+	 * 微信号
+	 */
+	@Column(name = "wechat_code",columnDefinition="varchar(255) COMMENT '微信号'")
+	private String weChatCode;
+	
+	
+	@Column(name = "idCard_up_image",columnDefinition="varchar(255) COMMENT '身份证证面'")
+	private String idCardUpImage;
 
+	@Column(name = "idCard_down_image",columnDefinition="varchar(255) COMMENT '身份证反面'")
+	private String idCardDownImage;
 }

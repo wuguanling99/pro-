@@ -22,5 +22,13 @@ public interface CompanyProductLinkRepository extends JpaSpecificationExecutor<C
 	* 方法返回值: @return
 	 */
 	List<CompanyProductLink> findByCompanyId(Long companyId);
+	
+	/**
+	 * 
+	* @Description:（根据产品id查询公司关联信息） 
+	* 方法返回值: @param productId
+	* 方法返回值: @return
+	 */
+	CompanyProductLink findByProductId(Long productId);
 
 }

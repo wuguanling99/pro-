@@ -16,7 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * 
+* @author: wgl
+* @date: 2020年3月16日上午12:30:50 
+* @version:1.0
+* @Description:HttpReuqest修饰器
+ */
 public class ContentCachingRequestWrapper extends HttpServletRequestWrapper {
 
 	private byte[] body;

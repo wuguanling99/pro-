@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.loan_apply.LoanApplyMybatisDao">
+   <select id = "getAllAuditedList" resultType = "java.util.Map">
+   	SELECT 
+	   	loan_order.id AS orderId,
+	   	per.`applicant_name` AS applicantName,
+	   	loan_order.create_time,per.apply_amount AS amount,
+	   	loan_order.`update_time` AS updateTime,
+	   	loan_order.order_type AS orderType,
+	   	loan_order.`sys_check_result` AS sysCheckResult,
+	   	product.product_name AS productName
+   	FROM `loan_order` AS `loan_order`
+   	LEFT JOIN `loan_applicant_per_info` AS per
+   	ON per.`order_id` = loan_order.`id`
+   	LEFT JOIN `product` AS product
+   	ON product.id = loan_order.`product_id`
+   	WHERE 
+   	( 
+   	loan_order.delete_flag = ${deleteFlag}
+   	AND 
+   	loan_order.company_id = ${companyId} 
+   	AND 
+   	loan_order.`check_user_id` = ${userId}  
+   	) 
+   	
+   	ORDER BY 
+   	create_time 
+   	LIMIT  ${limitStart}, ${limitEnd}
+   </select>
+   
+   <select id="getTotalSize" resultType="java.lang.Integer">
+   		SELECT COUNT(id) 
+   		FROM `loan_order` 
+   		WHERE ( 
+		   	delete_flag = ${deleteFlag} 
+		   	AND 
+		   	company_id = ${companyId} 
+		   	AND 
+		   	`check_user_id` = ${userId} 
+		   	) 
+   </select>
+</mapper>

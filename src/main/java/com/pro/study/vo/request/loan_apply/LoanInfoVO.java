@@ -28,7 +28,7 @@ public class LoanInfoVO {
 	/**
 	 * 还款期限
 	 */
-	private Integer orderType;
+	private Integer repayType;
 	/**
 	 * 贷款用途
 	 */

@@ -19,6 +19,7 @@ import com.pro.study.service.loan_aypply.LoanApplyService;
 import com.pro.study.service.user.UserService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
+import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
 import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
@@ -78,11 +79,12 @@ public class LoanApplyController {
 	
 	/**
 	 * 
-	* @Description:（根据用户获取用户已申请贷款列表） 
+	* @Description:（根据用户获取用户已申请贷款列表） 待审核
 	* 方法返回值: @param request
 	* 方法返回值: @return
 	 */
-	public List<LoanApplyFromResponseVo> getMyLoanApplyTableList(HttpServletRequest request) {
-		return loanApplyService.getLoanApplyTableListByUser(UserUtils.getUser(request));
+	@GetMapping("/getMyLoanApplyTableList")
+	public List<LoanApplyFromResponseVo> getMyLoanApplyTableList(HttpServletRequest request,@RequestBody PageInfo page) {
+		return loanApplyService.getLoanApplyTableListByUser(UserUtils.getUser(request),page);
 	}
 }

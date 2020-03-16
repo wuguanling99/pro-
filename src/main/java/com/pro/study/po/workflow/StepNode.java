@@ -40,10 +40,15 @@ public class StepNode extends BasePojo{
 	@Column(name = "step_describe",nullable=false,columnDefinition="varchar(255) COMMENT '节点描述'")
 	private String stepDescribe;
 
-	
 	/**
 	 * 节点类型
 	 */
 	@Column(name = "step_type",nullable=false,columnDefinition="int(2) COMMENT '节点类型'")
 	private Integer stepType;
+	
+	/**
+	 * 下一个节点id
+	 */
+	@Column(name = "pass_node_id",nullable=false,columnDefinition="int(2) COMMENT '通过的话下一个节点id'")
+	private Integer passNodeId;
 }

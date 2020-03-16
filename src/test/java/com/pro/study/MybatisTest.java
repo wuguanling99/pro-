@@ -9,8 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.pro.study.dao.company.CompanyMybaitsDao;
+import com.pro.study.dao.loan_apply.LoanApplyMybatisDao;
 import com.pro.study.dto.company.CompanyLoanerLocationDto;
+import com.pro.study.enums.SysDicEnum;
+import com.pro.study.vo.response.sys.Page;
 
 /**
  * 
@@ -25,9 +29,23 @@ public class MybatisTest {
 	
 	@Autowired
 	private CompanyMybaitsDao companyDao;
+	
+	@Autowired
+	private LoanApplyMybatisDao loanApplyDao; 
+	
     @Test
     public void test1() {
     	List<CompanyLoanerLocationDto> data = companyDao.getLonerLocationMapByCompanyId(1l);
     	System.out.println(data);
+    }
+    
+    @Test
+    public void testLoanApply() {
+    	List<Map> allAuditedList = loanApplyDao.getAllAuditedList(1l, 10, 10, 1l, SysDicEnum.SYS_VALID.getCode());
+    	Integer total = loanApplyDao.getTotalSize(1l,1l,SysDicEnum.SYS_VALID.getCode());
+    	Integer totalPageNo = Page.getTotalPageNo(total,10);
+    	System.out.println(totalPageNo);
+    	System.out.println(total);
+    	System.out.println(JSONUtils.toJSONString(allAuditedList));
     }
 }

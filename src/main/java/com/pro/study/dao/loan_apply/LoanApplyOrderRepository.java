@@ -21,6 +21,6 @@ public interface LoanApplyOrderRepository extends JpaSpecificationExecutor<LoanA
 	* 方法返回值: @param userId
 	* 方法返回值: @return
 	 */
-	List<LoanApplyOrder> findByUserId(Long userId);
+	List<LoanApplyOrder> findByUserIdAndDeleteFlag(Long userId,Integer deleteFlag);
 
 }

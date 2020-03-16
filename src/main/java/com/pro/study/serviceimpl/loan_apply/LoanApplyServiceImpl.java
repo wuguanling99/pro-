@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.pro.study.dao.company.CompanyProductLinkRepository;
 import com.pro.study.dao.company.CompanyRepository;
 import com.pro.study.dao.loan_apply.LoanApplicantRepository;
+import com.pro.study.dao.loan_apply.LoanApplyMybatisDao;
 import com.pro.study.dao.loan_apply.LoanApplyOrderRepository;
 import com.pro.study.dao.loan_apply.LoanBankInfoRepository;
 import com.pro.study.dao.loan_apply.LoanCreditCardRepository;
@@ -39,6 +40,7 @@ import com.pro.study.vo.request.loan_apply.LinkPerInfo;
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
 import com.pro.study.vo.request.loan_apply.LoanInfoVO;
 import com.pro.study.vo.request.loan_apply.PerInfoVO;
+import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
 import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
@@ -76,6 +78,11 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 	@Autowired
 	private LoanLinkPerRepository loanLinkRepository;
 	
+	
+	@Autowired
+	private LoanApplyMybatisDao loanApplyDao;
+	
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	/**
@@ -102,6 +109,8 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 			BeanUtils.copyProperties(loanInfo,loanApplyOrder);
 			//封装userId
 			loanApplyOrder.setUserId(user.getUserId());
+			//添加审核默认状态--待审核
+			loanApplyOrder.setOrderType(RiskCheckEnum.CHECK_TO_BE_AUDITED.getCode());
 			LoanApplyOrder save = orderRepository.save(loanApplyOrder);
 			//拿到订单id
 			Long orderId = save.getId();
@@ -163,11 +172,12 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 	 * 根据用户获取贷款申请列表
 	 */
 	@Override
-	public List<LoanApplyFromResponseVo> getLoanApplyTableListByUser(UserInfoDTO user) {
+	public List<LoanApplyFromResponseVo> getLoanApplyTableListByUser(UserInfoDTO user,PageInfo page) {
 		List<LoanApplyFromResponseVo> result = new ArrayList<LoanApplyFromResponseVo>();
 		//首先获取所有的订单
 		Long userId = user.getUserId();
-		List<LoanApplyOrder> orderList = orderRepository.findByUserId(userId);
+		List<LoanApplyOrder> orderList = orderRepository.findByUserIdAndDeleteFlag(userId, SysDicEnum.SYS_VALID.getCode());
+//		List<LoanInfoVO> findMyToBeAuuditedByPage = loanApplyDao.findMyToBeAuuditedByPage(page.getPageNum(), page.getPageSize());
 		for (LoanApplyOrder loanApplyOrder : orderList) {
 			//根据订单id获取订单信息
 			Long productId = loanApplyOrder.getProductId();

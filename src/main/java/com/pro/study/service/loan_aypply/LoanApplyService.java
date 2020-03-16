@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
+import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
 import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
@@ -38,10 +39,11 @@ public interface LoanApplyService {
 	
 	/**
 	 * 
-	* @Description:（根据用户获取贷款信息列表） 
+	* @Description:（根据用户获取贷款信息列表）待审核列表
 	* 方法返回值: @param user
+	* 方法返回值: @param page
 	* 方法返回值: @return
 	 */
-	List<LoanApplyFromResponseVo> getLoanApplyTableListByUser(UserInfoDTO user);
+	List<LoanApplyFromResponseVo> getLoanApplyTableListByUser(UserInfoDTO user, PageInfo page);
 
 }

@@ -5,9 +5,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.pro.study.dto.user.UserInfoDTO;
+import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
+import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 /** 
 * @author: wgl
@@ -39,5 +43,32 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	List<ProductResponseVO> getProductInfo(UserInfoDTO user);
+	
+	/**
+	 * 
+	* @param workflow 
+	 * @Description:（创建工作流） 
+	* 方法返回值: @param user
+	* 方法返回值: @return
+	 */
+	WorkFLowResponseVO createWorkFlow(UserInfoDTO user, WorkFlowRequestVO workflow);
+	
+	//==================================审核员===========================================
+	/**
+	 * 
+	* @Description:（获取我的待审核列表） 
+	* 方法返回值: @param user
+	* 方法返回值: @return
+	 */
+	CheckLoanFormReponseVO getMyToBeAuditedList(UserInfoDTO user);
+	
+	/**
+	 * 
+	* @Description:（分页获取所有审核订单） 
+	* 方法返回值: @param user
+	* 方法返回值: @param page
+	* 方法返回值: @return
+	 */
+	CheckLoanFormReponseVO getAllAuditedList(UserInfoDTO user, PageInfo page);
 
 }

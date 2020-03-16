@@ -38,7 +38,7 @@ public class Product extends BasePojo{
 	/**
 	 * 产品名
 	 */
-	@Column(name = "company_name",unique = true,columnDefinition="varchar(255) COMMENT '产品名称'")
+	@Column(name = "product_name",unique = true,columnDefinition="varchar(255) COMMENT '产品名称'")
 	private String productName;
 	
 	

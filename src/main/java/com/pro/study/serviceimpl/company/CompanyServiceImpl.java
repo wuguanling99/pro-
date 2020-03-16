@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,20 +16,32 @@ import org.springframework.stereotype.Service;
 import com.pro.study.dao.company.CompanyMybaitsDao;
 import com.pro.study.dao.company.CompanyProductLinkRepository;
 import com.pro.study.dao.company.CompanyRepository;
+import com.pro.study.dao.loan_apply.LoanApplicantRepository;
+import com.pro.study.dao.loan_apply.LoanApplyMybatisDao;
+import com.pro.study.dao.loan_apply.LoanApplyOrderRepository;
 import com.pro.study.dao.product.ProductRepository;
+import com.pro.study.dao.workflow.WorkflowRepository;
 import com.pro.study.dto.company.CompanyDto;
 import com.pro.study.dto.company.CompanyLoanerLocationDto;
 import com.pro.study.dto.company.LocationMapDto;
 import com.pro.study.dto.company.ProductDto;
+import com.pro.study.dto.sys.LimitDto;
 import com.pro.study.dto.user.UserInfoDTO;
+import com.pro.study.enums.SysDicEnum;
 import com.pro.study.po.company.Company;
 import com.pro.study.po.company.CompanyProductLink;
 import com.pro.study.po.product.Product;
+import com.pro.study.po.workflow.ProWorkFlow;
 import com.pro.study.service.company.CompanyService;
 import com.pro.study.utils.UserUtils;
+import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
+import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 /** 
 * @author: wgl
@@ -52,6 +65,18 @@ public class CompanyServiceImpl implements CompanyService{
 	
 	@Autowired
 	private CompanyMybaitsDao companyDao;
+
+	@Autowired
+	private WorkflowRepository workFlowRepository;
+	
+	@Autowired
+	private LoanApplyOrderRepository loanApplyOrderRepository;	
+	
+	@Autowired
+	private LoanApplicantRepository loanApplicantRepository;
+	
+	@Autowired
+	private LoanApplyMybatisDao loanApplyDao;
 	
 	/**
 	 * 获取公司信息
@@ -129,4 +154,72 @@ public class CompanyServiceImpl implements CompanyService{
 		return result;
 	}
 
+	/**
+	 * 创建工作流
+	 */
+	@Override
+	public WorkFLowResponseVO createWorkFlow(UserInfoDTO user,WorkFlowRequestVO workflow) {
+		WorkFLowResponseVO result = new WorkFLowResponseVO();
+		try {
+			ProWorkFlow proWorkFlow = new ProWorkFlow();
+			proWorkFlow.setWorkflowName(workflow.getName());
+			proWorkFlow.setCompanyId(user.getCompanyId());
+			proWorkFlow.setWorkflowDescribe(workflow.getDescribe());
+			workFlowRepository.save(proWorkFlow);
+			return result.success(workflow.getName());
+		}catch (Exception e) {
+			return result.faild();
+		}
+	}
+	
+	/**
+	 * 获取审核人待审核列表
+	 */
+	@Override
+	public CheckLoanFormReponseVO getMyToBeAuditedList(UserInfoDTO user) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		CheckLoanFormReponseVO result = new CheckLoanFormReponseVO();
+		try {
+//			Long userId = user.getUserId();
+//			List<LoanApplyOrder> orderList = loanApplyOrderRepository.findByUserIdAndDeleteFlag(userId,SysDicEnum.SYS_VALID.getCode());
+//			List<ToBeAuditedOrder> data = new ArrayList<ToBeAuditedOrder>();
+//			for (LoanApplyOrder loanApplyOrder : orderList) {
+//				ToBeAuditedOrder item = new ToBeAuditedOrder();
+//				item.setOrderId(loanApplyOrder.getId());
+//				//查询个人基本信息
+//				LoanApplicantPerInfo loanApplicantPerInfo = loanApplicantRepository.findById(loanApplyOrder.getId()).get();
+//				item.setName(loanApplicantPerInfo.getApplicantName());
+//				item.setApplyTime(sdf.format(loanApplyOrder.getCreateTime()));
+//				item.setSysCheckResult(loanApplyOrder.getSysCheckResult());
+//				item.setApplyAmount(loanApplicantPerInfo.getApplyAmount());
+//			}
+//			result.setData(data);
+			return result;
+		}catch (Exception e) {
+			return result.getListFaild();
+		}
+	}
+	
+	/**
+	 * 分页获取所有审核订单
+	 */
+	@Override
+	public CheckLoanFormReponseVO getAllAuditedList(UserInfoDTO user, PageInfo page) {
+		try {
+			Page<Map> pageData = new Page();
+			LimitDto limit = Page.getLimit(page.getPageNum(), page.getPageSize());
+			//首先获取数据
+//			List<Map> allAuditedList = loanApplyDao.getAllAuditedList(user.getCompanyId(),limit.getLimitStart(),limit.getLimitEnd(),user.getUserId(),SysDicEnum.SYS_VALID.getCode());
+			//统计总数
+			Integer total = loanApplyDao.getTotalSize(user.getCompanyId(),user.getUserId(),SysDicEnum.SYS_VALID.getCode());
+			pageData.setPageNo(page.getPageNum());
+			pageData.setPageSize(page.getPageSize());
+			pageData.setTotalPageNo(Page.getTotalPageNo(total,page.getPageSize()));//封装总页数
+			pageData.setTotalRecordNo(total);//封装总数据条数
+//			pageData.setList(allAuditedList);
+			return CheckLoanFormReponseVO.returnSucess(pageData);
+		}catch (Exception e) {
+			return CheckLoanFormReponseVO.returnFaild();
+		}
+	}
 }

@@ -1,6 +1,8 @@
 package com.pro.study.vo.request.loan_apply;
 
-import javax.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -9,12 +11,15 @@ import javax.persistence.Column;
 * @version:1.0
 * @Description:银行卡信息
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BankCardInfo {
 	
 	/**
 	 * 银行卡卡号
 	 */
-	private Integer bankCardCode;
+	private String bankCardCode;
 	
 	/**
 	 *银行卡对应开户行'

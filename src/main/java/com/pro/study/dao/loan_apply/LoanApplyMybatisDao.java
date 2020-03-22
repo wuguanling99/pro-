@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.pro.study.dto.loanApply.PerInfoDTO;
+import com.pro.study.dto.sys.LoanApplyOrderSearchDTO;
+
 /**
  * 
 * @author: wgl
@@ -29,6 +32,22 @@ public interface LoanApplyMybatisDao {
 	* 方法返回值: @return
 	 */
 	Integer getTotalSize(@Param("companyId")Long companyId,@Param("userId") Long userId,@Param("deleteFlag") Integer deleteFlag);
+	
+	/**
+	 * 
+	* @Description:（搜索获取贷款申请订单） 
+	* 方法返回值: @param userId
+	* 方法返回值: @param searchPageInfo
+	* 方法返回值: @return
+	 */
+	List<Map> searchPageLoanOrderByUserId(@Param("page") LoanApplyOrderSearchDTO searchPageInfo);
+	
+	/**
+	 * 
+	* @Description:（添加贷款申请人个人基本信息） 
+	* 方法返回值: @param perInfo
+	 */
+	void insertPerInfo(@Param("per")PerInfoDTO perInfo);
 	
 
 }

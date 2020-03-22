@@ -114,7 +114,7 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 	private boolean DecryRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		String content_type = request.getHeader("content-type");
-		if (content_type.equals("application/x-www-form-urlencoded")) {
+		if (content_type.equals("application/x-www-form-urlencoded")||content_type.equals("application/x-www-form-urlencoded; charset=UTF-8")) {
 			// 1)获取request里的uuid data aesKey
 			String uuid = request.getParameter("uuid");
 			String data = request.getParameter("data");
@@ -129,6 +129,13 @@ public class RSAKeyInterceptor extends HandlerInterceptorAdapter {
 			Object data=bodyMap.get("data");
 			Object aesKey=bodyMap.get("aesKey");
 			return DecryDataByRequestData(uuid,data,aesKey,request,response);
+		}else if(content_type.equals("multipart/form-data")) {
+			String bodyString = getRequestBody(request);
+			//拿到了body里的内容后我们将其转换成map
+			Map bodyMap = JsonUtil.jsonToPojo(bodyString, Map.class);
+			Object uuid=bodyMap.get("uuid");
+			Object data=bodyMap.get("data");
+			Object aesKey=bodyMap.get("aesKey");
 		}
 		return false;
 	}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.user.UserMybatisDao">
+	<insert id="insertUser" parameterType="com.pro.study.po.role.ProAuth">
+		INSERT INTO 
+			pro_auth 
+			(`role_id`,`role_name`,`auth_url`,`auth_flag`,`decrypt_flag`) 
+		VALUES 
+			(#{user.roleId}, #{user.roleName},#{user.url},#{user.authFlag},#{user.decryptFlag})
+	</insert>
+	<select id="findUser" resultType="com.pro.study.dto.user.UserBaseInfoDTO">
+		SELECT * FROM `pro_user` WHERE `delete_flag` = ${deleteFlag} AND id = ${userId}
+	</select>
+	<update id="updateUserInfo"  parameterType="com.pro.study.vo.request.user.UserBaseInfoRequestVO">
+		UPDATE `pro_user` SET 
+		`head_image` = ${user.headImage} , 
+		`phone_number` = ${user.phoneNumber},
+		`email` = #{user.email} 
+		 WHERE 
+		 id = ${user.userId}
+	</update>
+</mapper>

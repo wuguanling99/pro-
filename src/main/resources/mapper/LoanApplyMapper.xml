@@ -40,4 +40,52 @@
 		   	`check_user_id` = ${userId} 
 		   	) 
    </select>
+   
+   <select id="searchPageLoanOrderByUserId"  resultType="java.util.Map" parameterType="com.pro.study.dto.sys.LoanApplyOrderSearchDTO">
+   		SELECT loanOrder.id AS orderId, per.`applicant_name` AS applyName, loanOrder.order_type AS orderType, loanOrder.`create_time` AS createTime, per.`apply_amount` AS applyAmount
+			, product.`product_name` AS productName, company.`company_name` AS companyName
+		FROM `loan_order` loanOrder
+			LEFT JOIN `product` product ON loanOrder.product_id = product.id
+			LEFT JOIN `company` company ON loanOrder.company_id = company.id
+			LEFT JOIN `loan_applicant_per_info` per ON loanOrder.id = per.`order_id`
+		WHERE (loanOrder.`user_id` = 1
+		<if test="page.orderType!=null and page.orderType!=''">
+			AND loanOrder.`order_type` = ${page.orderType} 
+		</if>
+   	 	<if test="page.companyName!=null and page.companyName!=''">
+			AND company.`company_name` LIKE '%${page.companyName}%'
+		</if>
+   	 	<if test="page.productName!=null and page.productName!=''">
+			AND product.`product_name` LIKE '%${page.productName}%'
+		</if>
+		)
+		LIMIT ${page.limitStart},  ${page.limitEnd}
+   </select>
+   
+   <insert id="insertPerInfo" parameterType="com.pro.study.dto.loanApply.PerInfoDTO">
+   		INSERT INTO `loan_applicant_per_info` 
+		(`applicant_name`,`apply_amount`,`e_mail`,`edu`,`id_card`,`id_card_down_image`,`id_card_location`,`id_card_up_image`,`marry_info`,`native_area`,`native_city`,`native_province`,`now_location`,`order_id`,`phone_num`,`postal_code`,`sex`,`social_num`,`support_num`,`wechat_code`) 
+		VALUES 
+		(
+		#{per.name},
+		#{per.amount},
+		#{per.email},
+		#{per.edu},
+		#{per.idCard},
+		#{per.downImage},
+		#{per.idCardLocation},
+		#{per.upImage},
+		#{per.marryInfo},
+		#{per.area},
+		#{per.city},
+		#{per.province},
+		#{per.location},
+		#{per.orderId},
+		#{per.phoneNumber},
+		#{per.postalCode},
+		#{per.sex},
+		#{per.socialNum},
+		#{per.supportNum},
+		#{per.wechatCode})
+   </insert>
 </mapper>

@@ -53,7 +53,7 @@ public class User extends BasePojo{
 	/**
 	 * 身份证号
 	 */
-	@Column(name = "id_card",unique = true,nullable=false,columnDefinition="varchar(255) COMMENT '身份证号'")
+	@Column(name = "id_card",nullable=false,columnDefinition="varchar(255) COMMENT '身份证号'")
 	private String idCard;
 	
 	/**

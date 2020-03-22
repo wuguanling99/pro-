@@ -24,8 +24,8 @@ public class StepNode extends BasePojo{
 	/**
 	 * 产品id
 	 */
-	@Column(name = "product_id",nullable=false,columnDefinition="bigint(255) default 0 COMMENT '产品id'")
-	private Long productId;
+	@Column(name = "workflow_id",columnDefinition="bigint(255) default 0 COMMENT '产品id'")
+	private Long workflowId;
 	
 	
 	/**
@@ -49,6 +49,6 @@ public class StepNode extends BasePojo{
 	/**
 	 * 下一个节点id
 	 */
-	@Column(name = "pass_node_id",nullable=false,columnDefinition="int(2) COMMENT '通过的话下一个节点id'")
+	@Column(name = "pass_node_id",columnDefinition="int(2) COMMENT '通过的话下一个节点id'")
 	private Integer passNodeId;
 }

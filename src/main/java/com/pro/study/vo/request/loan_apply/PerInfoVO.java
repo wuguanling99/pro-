@@ -98,4 +98,19 @@ public class PerInfoVO {
 	 * 社保号
 	 */
 	private String socialNum;
+	
+	/**
+	 * 身份证正面照
+	 */
+	private String upImage;
+	
+	/**
+	 * 身份证反面照
+	 */
+	private String downImage;
+	
+	/**
+	 * 微信号
+	 */
+	private String weChatCode;
 }

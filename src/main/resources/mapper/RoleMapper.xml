@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.role.RoleMybatisDao">
+    <select id="findAllRoleByDeleteFlag" resultType="com.pro.study.dto.role.RoleDto">
+    	SELECT * FROM `pro_role` WHERE delete_flag = ${deleteFalg}
+    </select>
+    <select id="findByRoleNameAndDeleteFlag" resultType="com.pro.study.dto.role.RoleDto">
+    	SELECT * FROM `pro_role` WHERE delete_flag = #{deleteFalg} AND role_name = #{roleName}
+    </select>
+</mapper>

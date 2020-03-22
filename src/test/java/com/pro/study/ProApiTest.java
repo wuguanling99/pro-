@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -23,6 +24,7 @@ import com.alibaba.druid.pool.DruidDataSource;
  *
  */
 @SpringBootApplication
+@EnableTransactionManagement
 @MapperScan("com.pro.study.dao.*")
 public class ProApiTest{
 

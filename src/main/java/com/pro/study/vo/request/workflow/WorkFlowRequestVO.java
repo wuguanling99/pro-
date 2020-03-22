@@ -1,5 +1,7 @@
 package com.pro.study.vo.request.workflow;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -21,5 +23,15 @@ public class WorkFlowRequestVO {
 	 * 工作流描述
 	 */
 	private String describe;
+	
+	/**
+	 * 产品id
+	 */
+	private Long productId;
+	
+	/**
+	 * 节点列表
+	 */
+	private List<NodeRequestVO> nodeList;  
 	
 }

@@ -47,4 +47,6 @@ public class LoanApplyOrder extends BasePojo{
 	
 	@Column(name = "sys_check_result",columnDefinition="varchar(255) COMMENT '系统审核结论'")
 	private String sysCheckResult;
+	
+	
 }

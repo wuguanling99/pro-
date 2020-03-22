@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,11 +15,13 @@ import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.service.company.CompanyService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 
@@ -74,11 +77,22 @@ public class CompanyController{
 	* @Description:（创建工作流） 
 	* 方法返回值: @return
 	 */
+	@PostMapping("/createWorkFlow")
 	public WorkFLowResponseVO createWorkFlow(HttpServletRequest request,@RequestBody WorkFlowRequestVO workflow) {
 		UserInfoDTO user = UserUtils.getUser(request);
 		return companyService.createWorkFlow(user,workflow);
 	}
 	
+	/**
+	 * 
+	* @Description:（创建节点） 
+	* 方法返回值: @return
+	 */
+	@PostMapping("/createNode")
+	public NodeResponseVO createNode(HttpServletRequest request,@RequestBody NodeRequestVO node) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.createNode(user,node);
+	}
 	
 	//==================================审核员================================================
 	/**

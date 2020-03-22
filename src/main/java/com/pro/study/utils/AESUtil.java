@@ -165,8 +165,13 @@ public class AESUtil {
        }
      }
     public static void main(String[] args) {
-		String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChlE4WfVagCrK3Z4iJkgxky66x5QCc2nZ2jEi5KHKKzuzcAcmwZ5uiNiGBGWVRtkOfqQtrQlb1iS/pytUVvKpvT+jFEFhm2WKgznXih7XLZlH4qTzPr3Yrr7QrFaR1qbddF8UmkyRN2OgPiKGCz8W5wYVTfM6rNiYGImus6UtLywIDAQAB";
-		String dataPlainText= "{\"username\":\"wgl\",\"password\":\"1234\"}";
+		String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2uRLo7WN5wOHpYAVOufOAMpQlKZeDEMAB9/IfclYtiIH9C2VcypvJaDwvUACYIVgEx4hcnAsBaycCO6LAXMioPpPJmfKsCyV7zxqK0XmlZ9qOdw8JzV3gmQBMW2DNdTdPRCGfH7yrTFqK3SelM3s2MiM4Tx0QSD5w/jxkJNPsfQIDAQAB";
+//		String dataPlainText= "{\"username\":\"wgl\",\"password\":\"1234\"}";
+//		String dataPlainText= "{\"username\":\"companyAdmin\",\"password\":\"1234\"}";
+//		String dataPlainText = "{\"userId\":1,\"phoneNumber\":\"150****0776\",\"email\":\"w1234567@163.com\",\"headImage\":\"1234\"}";
+//		String dataPlainText = "{\"pageNum\":1,\"pageSize\":10,\"companyName\":\"开元\",\"productName\":\"消费\",\"orderType\":\"1\"}";
+//		String dataPlainText = "{\"perinfo\":{\"applicantName\":\"张三\",\"sex\":1,\"idCard\":\"430203199206251018\",\"idCardLocation\":\"株洲\",\"nowLocation\":\"株洲现居地\",\"marryInfo\":1,\"postalCode\":\"xxxxpostalCode\",\"supportNum\":2,\"edu\":1,\"houseType\":1,\"phoneNum\":\"15811170776\",\"nativeProvince\":\"湖南\",\"nativeCity\":\"株洲\",\"nativeArea\":\"石峰区\",\"socialNum\":\"社保号\",\"upImage\":\"2.key\",\"downImage\":\"1.key\",\"weChatCode\":\"wechatcode\",\"email\":\"w50638957@163.com\"},\"loanInfo\":{\"companyId\":1,\"productId\":1,\"repayType\":1,\"loanUseType\":1,\"repayment\":50000,\"amount\":50000},\"bankCardList\":[{\"bankCardCode\":\"银行卡号1\",\"bankName\":\"招商银行1\",\"bankCardUpImage\":\"11up.key\",\"bankCardDownImage\":\"11down.key\"},{\"bankCardCode\":\"银行卡号2\",\"bankName\":\"招商银行2\",\"bankCardUpImage\":\"22up.key\",\"bankCardDownImage\":\"22down.key\"}],\"creditCardList\":[{\"creditCardCode\":\"信用卡号1\",\"creditName\":\"建设银行1\",\"creditCardUpImage\":\"11up.key\",\"creditCardDownImage\":\"11down.key\"},{\"creditCardCode\":\"信用卡号2\",\"creditName\":\"建设银行2\",\"creditCardUpImage\":\"22up.key\",\"creditCardDownImage\":\"22down.key\"}],\"linkPerInfoList\":[{\"linkPerName\":\"李四\",\"linkPerPhoneNumber\":\"1501117077x\",\"linkPerLocation\":\"湖南株洲1\",\"linkPerType\":1},{\"linkPerName\":\"王五\",\"linkPerPhoneNumber\":\"1501117077x\",\"linkPerLocation\":\"湖南株洲2\",\"linkPerType\":2},{\"linkPerName\":\"陈六\",\"linkPerPhoneNumber\":\"1501117077x\",\"linkPerLocation\":\"湖南株洲3\",\"linkPerType\":3}]}";
+		String dataPlainText= "{\"nodeName\":\"准入规则\",\"nodeDescribe\":\"首先利用准入规则筛选第一部分人员\"}";
 		//生成一个RESkey对其加密
 		String keyPlainText = getKey();
 		//利用RSA工具对aesKey其进行加密
@@ -177,5 +182,4 @@ public class AESUtil {
 		System.out.println("利用RSA加密后的AESKey:"+aseKey);
 		System.out.println("AES加密后的数据:"+data);
     }
-
 }

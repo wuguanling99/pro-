@@ -3,32 +3,37 @@ package com.pro.study.serviceimpl.loan_apply;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pro.study.dao.company.CompanyProductLinkRepository;
 import com.pro.study.dao.company.CompanyRepository;
+import com.pro.study.dao.loan_apply.LinkPerMybatisDao;
 import com.pro.study.dao.loan_apply.LoanApplicantRepository;
 import com.pro.study.dao.loan_apply.LoanApplyMybatisDao;
+import com.pro.study.dao.loan_apply.LoanApplyOrderMybatisDao;
 import com.pro.study.dao.loan_apply.LoanApplyOrderRepository;
 import com.pro.study.dao.loan_apply.LoanBankInfoRepository;
+import com.pro.study.dao.loan_apply.LoanBankMybatisDao;
 import com.pro.study.dao.loan_apply.LoanCreditCardRepository;
 import com.pro.study.dao.loan_apply.LoanLinkPerRepository;
 import com.pro.study.dao.product.ProductRepository;
+import com.pro.study.dto.loanApply.LinkPerDTO;
+import com.pro.study.dto.loanApply.LoanApplyOrderDTO;
+import com.pro.study.dto.loanApply.LoanBankDTO;
+import com.pro.study.dto.loanApply.PerInfoDTO;
+import com.pro.study.dto.sys.LimitDto;
+import com.pro.study.dto.sys.LoanApplyOrderSearchDTO;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.RiskCheckEnum;
 import com.pro.study.enums.SysDicEnum;
 import com.pro.study.po.company.Company;
 import com.pro.study.po.company.CompanyProductLink;
-import com.pro.study.po.loan.LoanApplicantBankCardInfo;
-import com.pro.study.po.loan.LoanApplicantCreditCardInfo;
-import com.pro.study.po.loan.LoanApplicantLinkInfo;
 import com.pro.study.po.loan.LoanApplicantPerInfo;
 import com.pro.study.po.loan.LoanApplyOrder;
 import com.pro.study.service.loan_aypply.LoanApplyService;
@@ -41,9 +46,13 @@ import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
 import com.pro.study.vo.request.loan_apply.LoanInfoVO;
 import com.pro.study.vo.request.loan_apply.PerInfoVO;
 import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.sys.SearchPageInfoRequestVO;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
 import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
+import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.sys.SysListResponseVO;
 
 /** 
 * @author: wgl
@@ -82,6 +91,14 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 	@Autowired
 	private LoanApplyMybatisDao loanApplyDao;
 	
+	@Autowired
+	private LoanApplyOrderMybatisDao loanOrderDao;
+	
+	@Autowired
+	private LoanBankMybatisDao bankDao;
+	
+	@Autowired
+	private LinkPerMybatisDao linkPerDao;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -103,49 +120,75 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 			List<CreditCardInfo> creditCardList = loanApplyTable.getCreditCardList();
 			//保存贷款申请信息---联系人信息
 			List<LinkPerInfo> linkPerInfoList = loanApplyTable.getLinkPerInfoList();
-			//数据入库
-			LoanApplyOrder loanApplyOrder = new LoanApplyOrder();
 			//保存订单信息
-			BeanUtils.copyProperties(loanInfo,loanApplyOrder);
-			//封装userId
-			loanApplyOrder.setUserId(user.getUserId());
-			//添加审核默认状态--待审核
-			loanApplyOrder.setOrderType(RiskCheckEnum.CHECK_TO_BE_AUDITED.getCode());
-			LoanApplyOrder save = orderRepository.save(loanApplyOrder);
-			//拿到订单id
-			Long orderId = save.getId();
+			LoanApplyOrderDTO order = new LoanApplyOrderDTO();
+			order.setCompanyId(loanInfo.getCompanyId());
+			order.setOrderType(RiskCheckEnum.CHECK_TO_BE_AUDITED.getCode());
+			order.setProductId(loanInfo.getProductId());
+			order.setRepayment(loanInfo.getRepayment());
+			order.setRepayType(loanInfo.getRepayType());
+			order.setUserId(user.getUserId());
+			order.setUseType(loanInfo.getLoanUseType());
+			loanOrderDao.insertLoanOrder(order);
+			Long orderId = order.getId();
 			//保存个人基本信息
-			LoanApplicantPerInfo loanApplicantPerInfo = new LoanApplicantPerInfo();
-			BeanUtils.copyProperties(perinfo,loanApplicantPerInfo);
-			loanApplicantPerInfo.setOrderId(orderId);
-			loanApplicantRepository.save(loanApplicantPerInfo);
-			//保存联系人信息
-			List<LoanApplicantLinkInfo> linkPerList = new ArrayList<LoanApplicantLinkInfo>();
-			for(BankCardInfo index : bankCardList) {
-				LoanApplicantLinkInfo loanApplicantLinkInfo = new LoanApplicantLinkInfo();
-				BeanUtils.copyProperties(index,loanApplicantLinkInfo );
-				loanApplicantLinkInfo.setOrderId(orderId);
-				linkPerList.add(loanApplicantLinkInfo);
+			PerInfoDTO perInfoDTO = new PerInfoDTO();
+			perInfoDTO.setAmount(loanInfo.getAmount());
+			perInfoDTO.setArea(perinfo.getNativeArea());
+			perInfoDTO.setCity(perinfo.getNativeCity());
+			perInfoDTO.setProvince(perinfo.getNativeProvince());
+			perInfoDTO.setDownImage(perinfo.getDownImage());
+			perInfoDTO.setEdu(perinfo.getEdu());
+			perInfoDTO.setEmail(perinfo.getEMail());
+			perInfoDTO.setIdCard(perinfo.getIdCard());
+			perInfoDTO.setIdCardLocation(perinfo.getIdCardLocation());
+			perInfoDTO.setLocation(perinfo.getNowLocation());
+			perInfoDTO.setMarryInfo(perinfo.getMarryInfo());
+			perInfoDTO.setName(perinfo.getApplicantName());
+			perInfoDTO.setOrderId(orderId);
+			perInfoDTO.setPhoneNumber(perinfo.getPhoneNum());
+			perInfoDTO.setPostalCode(perinfo.getPostalCode());
+			perInfoDTO.setSex(perinfo.getSex());
+			perInfoDTO.setSocialNum(perinfo.getSocialNum());
+			perInfoDTO.setSupportNum(perinfo.getSupportNum());
+			perInfoDTO.setUpImage(perinfo.getUpImage());
+			perInfoDTO.setWechatCode(perinfo.getWeChatCode());
+			loanApplyDao.insertPerInfo(perInfoDTO);
+			//添加银行卡信息
+			List<LoanBankDTO> bankInfo = new ArrayList<LoanBankDTO>();
+			for(BankCardInfo bankIndex :bankCardList) {
+				LoanBankDTO bankDTO = new LoanBankDTO();
+				bankDTO.setBankName(bankIndex.getBankName());
+				bankDTO.setCode(bankIndex.getBankCardCode());
+				bankDTO.setDownImage(bankIndex.getBankCardDownImage());
+				bankDTO.setOrderId(orderId);
+				bankDTO.setUpImage(bankIndex.getBankCardUpImage());
+				bankInfo.add(bankDTO);
 			}
-			loanLinkRepository.saveAll(linkPerList);
-			//保存银行卡信息
-			List<LoanApplicantBankCardInfo> bankInfoList = new ArrayList<LoanApplicantBankCardInfo>();
-			for(BankCardInfo index : bankCardList){
-				LoanApplicantBankCardInfo bankInfo = new LoanApplicantBankCardInfo();
-				BeanUtils.copyProperties(index, bankInfo);
-				bankInfo.setOrderId(orderId);
-				bankInfoList.add(bankInfo);
+			bankDao.addBank(bankInfo);
+			//添加信号卡信息
+			List<LoanBankDTO> creditCardInfo = new ArrayList<LoanBankDTO>();
+			for(CreditCardInfo creditCard : creditCardList) {
+				LoanBankDTO bankDTO = new LoanBankDTO();
+				bankDTO.setBankName(creditCard.getCreditName());
+				bankDTO.setCode(creditCard.getCreditCardCode());
+				bankDTO.setDownImage(creditCard.getCreditCardDownImage());
+				bankDTO.setOrderId(orderId);
+				bankDTO.setUpImage(creditCard.getCreditCardUpImage());
+				creditCardInfo.add(bankDTO);
 			}
-			loanBankCardRepository.saveAll(bankInfoList);
-			//保存信用卡信息
-			List<LoanApplicantCreditCardInfo> creditCardInfoList = new ArrayList<LoanApplicantCreditCardInfo>();
-			for(CreditCardInfo index :creditCardList) {
-				LoanApplicantCreditCardInfo creditCard = new LoanApplicantCreditCardInfo();
-				BeanUtils.copyProperties(index, creditCard);
-				creditCard.setOrderId(orderId);
-				creditCardInfoList.add(creditCard);
+			bankDao.addCreditCard(creditCardInfo);
+			List<LinkPerDTO> linkPerList = new ArrayList<LinkPerDTO>();
+			for (LinkPerInfo linkPer : linkPerInfoList) {
+				LinkPerDTO linkPerDTO = new LinkPerDTO();
+				linkPerDTO.setLocation(linkPer.getLinkPerLocation());
+				linkPerDTO.setName(linkPer.getLinkPerName());
+				linkPerDTO.setPhoneNumber(linkPer.getLinkPerPhoneNumber());
+				linkPerDTO.setRelationship(linkPer.getLinkPerType());
+				linkPerDTO.setOrderId(orderId);
+				linkPerList.add(linkPerDTO);
 			}
-			loanCreditCardRepository.saveAll(creditCardInfoList);
+			linkPerDao.addLinker(linkPerList);
 			return new CreateLoanApplyTableResponseVO(SysDicEnum.SUCCESS.getCode(),SysDicEnum.SUCCESS.getMessage());
 		}catch (Exception e) {
 			return new CreateLoanApplyTableResponseVO(SysDicEnum.ERROR.getCode(),SysDicEnum.ERROR.getMessage());
@@ -160,11 +203,11 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 	@Override
 	public ImageResponseVO uploadImage(MultipartFile file) {
 		OSSClientUtil ossClient = new OSSClientUtil();
-        String name = ossClient.uploadImg2Oss(file,1L);
-        String path = ossClient.getImageUrl(name);
+//        String name = ossClient.uploadImg2Oss(file,1L);
+//        String path = ossClient.getImageUrl(name);
         ImageResponseVO result = new ImageResponseVO();
-        result.setImageUrl(path);
-        result.setCode(HttpStatus.OK.value());
+//        result.setImageUrl(path);
+//        result.setCode(HttpStatus.OK.value());
 		return result;
 	}
 	
@@ -204,5 +247,72 @@ public class LoanApplyServiceImpl implements LoanApplyService{
 		}
 		return result;
 	}
-
+	
+	/**
+	 * 搜索贷款申请订单列表
+	 */
+	@Override
+	public SysListResponseVO searchLoanTable(UserInfoDTO user, SearchPageInfoRequestVO searchPageInfo) {
+		try {
+			SysListResponseVO result = new SysListResponseVO();
+			LimitDto limit = Page.getLimit(searchPageInfo.getPageNum(), searchPageInfo.getPageSize());
+			LoanApplyOrderSearchDTO searchAndPageInfo = new LoanApplyOrderSearchDTO();
+			searchAndPageInfo.setCompanyName(searchPageInfo.getCompanyName());
+			searchAndPageInfo.setOrderType(searchPageInfo.getOrderType());
+			searchAndPageInfo.setProductName(searchPageInfo.getProductName());
+			searchAndPageInfo.setLimitStart(limit.getLimitStart());
+			searchAndPageInfo.setLimitEnd(limit.getLimitEnd());
+			searchAndPageInfo.setUserId(user.getUserId());
+			List<Map> data = loanApplyDao.searchPageLoanOrderByUserId(searchAndPageInfo);
+			result.setCode(SysDicEnum.SUCCESS.getCode());
+			result.setData(data);
+			result.setMessage("数据查询成功");
+			return result;
+		}catch (Exception e) {
+			return new SysListResponseVO(SysDicEnum.ERROR.getCode(),"数据查询失败",null);
+		}
+	}
+	
+	/**
+	 * 身份证正反面上传
+	 */
+	@Override
+	public ImageReponseVO uploadPerIdCardImage(UserInfoDTO user, Integer face, MultipartFile file) {
+		try {
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String key = ossClientUtil.uploadImgPerIdCard(file,face);
+			String url = ossClientUtil.getHeadImageUrl(key);
+			return new ImageReponseVO(SysDicEnum.SUCCESS.getCode(),"图片上传成功",url,key);
+		}catch (Exception e) {
+			return new ImageReponseVO(SysDicEnum.ERROR.getCode(),"图片上传失败");
+		}
+	}
+	
+	/**
+	 * 上传银行卡正反面
+	 */
+	@Override
+	public ImageReponseVO uploadBankCardImage(UserInfoDTO user, Integer face, MultipartFile file) {
+		try {
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String key = ossClientUtil.uploadBankCard(file,face);
+			String url = ossClientUtil.getHeadImageUrl(key);
+			return new ImageReponseVO(SysDicEnum.SUCCESS.getCode(),"图片上传成功",url,key);
+		}catch (Exception e) {
+			return new ImageReponseVO(SysDicEnum.ERROR.getCode(),"图片上传失败");
+		}
+	}
+	
+	@Override
+	public ImageReponseVO uploadCreditCardImage(UserInfoDTO user, Integer face, MultipartFile file) {
+		try {
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String key = ossClientUtil.uploadCreditCard(file,face);
+			String url = ossClientUtil.getHeadImageUrl(key);
+			return new ImageReponseVO(SysDicEnum.SUCCESS.getCode(),"图片上传成功",url,key);
+		}catch (Exception e) {
+			return new ImageReponseVO(SysDicEnum.ERROR.getCode(),"图片上传失败");
+		}
+	}
+	
 }

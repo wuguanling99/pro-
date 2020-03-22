@@ -16,6 +16,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SysDicEnum {
+	//======照片正反面========
+	UP_FACE(0,"正面"),
+	DOWN_FACE(1,"反面"),
 	//=====上传成功====
 	OSS_UPLOAD_SUCCESS(0,"上传成功"),
 	OSS_UPLOAD_FAILD(1,"上传失败"),

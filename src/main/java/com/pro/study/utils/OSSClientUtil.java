@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +38,11 @@ public class OSSClientUtil {
     /**
      * accessKey
      */
-    private String accessKeyId = "LTAI4FgeYy8AQ8VChvVR2wGZ";
+    private String accessKeyId = "LTAITQG8dZD99UEo";
     /**
      * accessKeySecret
      */
-    private String accessKeySecret = "I0JsGYu7kHr9ZIdHsYQCRubc8nGIQI";
+    private String accessKeySecret = "bEhhvZ4fJ4mO6twvFBkiMgUzMlGR1Y";
     /**
      * 空间
      */
@@ -49,7 +50,21 @@ public class OSSClientUtil {
     /**
      * 文件存储目录
      */
-    private String filedir = "loan_user_image";
+    private String filedir = "head_image/";
+    
+    private String idCardUpImage = "per_id_card_upimage/";
+    
+    private String idCardDownImage = "per_id_card_downimage/";
+    
+    private String headImage = "head_image";
+    
+    private String bankCardUpImage = "bank_card_upimage/";
+    
+    private String bankCardDownImage = "bank_card_downimage/";
+    
+    private String creditCardUpImage = "credit_card_upimage/";
+    
+    private String creditCardDownImage = "credit_card_downimage/";
 
     private OSS ossClient;
 
@@ -84,28 +99,45 @@ public class OSSClientUtil {
     public void destory() {
         ossClient.shutdown();
     }
-
+    
     /**
-     * 上传图片
-     *
-     * @param url
+     * 
+    * @Description:（上传身份证照正反面） 
+    * 方法返回值: @param file
+    * 方法返回值: @param uuid
+    * 方法返回值: @param faceFlag
+    * 方法返回值: @return
      */
-    public void uploadImg2Oss(String url) throws Exception {
-        File fileOnServer = new File(url);
-        FileInputStream fin;
+    public String uploadImgPerIdCard(MultipartFile file,Integer faceFlag) {
+    	if (file.getSize() > MAX_SIZE) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //获取文件名
+        String originalFilename = file.getOriginalFilename();
+        //获取文件后缀名
+        String substring = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        //判断图片格式是否正确
+        if (!substring.equals(".jpg") && !substring.equals(".jpeg") && !substring.equals(".png")) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //设置文件名
+        String uuid = UUID.randomUUID().toString();
+        String name = uuid + substring;
         try {
-            fin = new FileInputStream(fileOnServer);
-            String[] split = url.split("/");
-            this.uploadFile2OSS(fin, split[split.length - 1]);
-        } catch (FileNotFoundException e) {
-            throw new Exception("图片上传失败01");
+            InputStream inputStream = file.getInputStream();
+            //上传文件
+            String dir = faceFlag == SysDicEnum.UP_FACE.getCode()? idCardUpImage:idCardDownImage;
+            this.uploadImage(inputStream, name,dir);
+            return name;
+        } catch (Exception e) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
         }
     }
-
+    
 	/**
 	 * 指定文件名为Id
 	 */
-    public String uploadImg2Oss(MultipartFile file, Long id) {
+    public String uploadImgHeadImage(MultipartFile file, Long id) {
 
         if (file.getSize() > MAX_SIZE) {
             throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
@@ -123,7 +155,7 @@ public class OSSClientUtil {
         try {
             InputStream inputStream = file.getInputStream();
             //上传文件
-            this.uploadFile2OSS(inputStream, name);
+            this.uploadImage(inputStream, name,headImage);
             return name;
         } catch (Exception e) {
             throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
@@ -138,7 +170,14 @@ public class OSSClientUtil {
     public String getImageUrl(String name) {
         return "https://" + bucketName + "." + endpoint + "/" + filedir + name;
     }
-    public String uploadImg2Oss(MultipartFile file) throws Exception {
+    /**
+     * 
+    * @Description:（上传头像） 
+    * 方法返回值: @param file
+    * 方法返回值: @return
+    * 方法返回值: @throws Exception
+     */
+    public String uploadImgHeadImage(MultipartFile file) throws Exception {
         if (file.getSize() > 1024 * 1024 * 10) {
             throw new Exception("上传图片大小不能超过10M！");
         }
@@ -148,7 +187,7 @@ public class OSSClientUtil {
         String name = random.nextInt(10000) + System.currentTimeMillis() + substring;
         try {
             InputStream inputStream = file.getInputStream();
-            this.uploadFile2OSS(inputStream, name);
+            this.uploadImage(inputStream, name,headImage);
             return name;
         } catch (Exception e) {
             throw new Exception("图片上传失败02");
@@ -176,7 +215,7 @@ public class OSSClientUtil {
      * @param fileName 文件名称 包括后缀名
      * @return 出错返回"" ,唯一MD5数字签名
      */
-    public String uploadFile2OSS(InputStream instream, String fileName) {
+    public String uploadImage(InputStream instream, String fileName,String dir) {
         String ret = "";
         try {
             //创建上传Object的Metadata
@@ -187,7 +226,7 @@ public class OSSClientUtil {
             objectMetadata.setContentType(getContentType(fileName.substring(fileName.lastIndexOf("."))));
             objectMetadata.setContentDisposition("inline;filename=" + fileName);
             //上传文件
-            PutObjectResult putResult = ossClient.putObject(bucketName, filedir + fileName, instream, objectMetadata);
+            PutObjectResult putResult = ossClient.putObject(bucketName, dir + fileName, instream, objectMetadata);
             ret = putResult.getETag();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -260,5 +299,82 @@ public class OSSClientUtil {
         }
         return null;
     }
+    
+    /**
+     * 
+    * @Description:（获取头像url） 
+       * 方法返回值: @param upload
+     */
+	public String getHeadImageUrl(String upload) {
+		OSSClientUtil ossClientUtil = new OSSClientUtil();
+		String key = ossClientUtil.filedir+upload;
+    	String imageUrl = ossClientUtil.getUrl(key);	
+    	return imageUrl;
+	}
+	
+	/**
+	 * 
+	* @Description:（上传银行卡正反面） 
+	* 方法返回值: @param file
+	* 方法返回值: @param face
+	* 方法返回值: @return
+	 */
+	public String uploadBankCard(MultipartFile file, Integer faceFlag) {
+		if (file.getSize() > MAX_SIZE) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //获取文件名
+        String originalFilename = file.getOriginalFilename();
+        //获取文件后缀名
+        String substring = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        //判断图片格式是否正确
+        if (!substring.equals(".jpg") && !substring.equals(".jpeg") && !substring.equals(".png")) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //设置文件名
+        String uuid = UUID.randomUUID().toString();
+        String name = uuid + substring;
+        try {
+            InputStream inputStream = file.getInputStream();
+            //上传文件
+            String dir = faceFlag == SysDicEnum.UP_FACE.getCode()? bankCardUpImage:bankCardDownImage;
+            this.uploadImage(inputStream, name,dir);
+            return name;
+        } catch (Exception e) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+	}
 
+	/**
+	 * 
+	* @Description:（上传信用卡正反面） 
+	* 方法返回值: @param file
+	* 方法返回值: @param faceFlag
+	* 方法返回值: @return
+	 */
+	public String uploadCreditCard(MultipartFile file, Integer faceFlag) {
+		if (file.getSize() > MAX_SIZE) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //获取文件名
+        String originalFilename = file.getOriginalFilename();
+        //获取文件后缀名
+        String substring = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        //判断图片格式是否正确
+        if (!substring.equals(".jpg") && !substring.equals(".jpeg") && !substring.equals(".png")) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //设置文件名
+        String uuid = UUID.randomUUID().toString();
+        String name = uuid + substring;
+        try {
+            InputStream inputStream = file.getInputStream();
+            //上传文件
+            String dir = faceFlag == SysDicEnum.UP_FACE.getCode()? creditCardUpImage:creditCardDownImage;
+            this.uploadImage(inputStream, name,dir);
+            return name;
+        } catch (Exception e) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+	}
 }

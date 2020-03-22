@@ -20,6 +20,7 @@ import com.pro.study.dao.loan_apply.LoanApplicantRepository;
 import com.pro.study.dao.loan_apply.LoanApplyMybatisDao;
 import com.pro.study.dao.loan_apply.LoanApplyOrderRepository;
 import com.pro.study.dao.product.ProductRepository;
+import com.pro.study.dao.workflow.WorkFlowMybatisDao;
 import com.pro.study.dao.workflow.WorkflowRepository;
 import com.pro.study.dto.company.CompanyDto;
 import com.pro.study.dto.company.CompanyLoanerLocationDto;
@@ -27,20 +28,24 @@ import com.pro.study.dto.company.LocationMapDto;
 import com.pro.study.dto.company.ProductDto;
 import com.pro.study.dto.sys.LimitDto;
 import com.pro.study.dto.user.UserInfoDTO;
+import com.pro.study.dto.workflow.NodeDTO;
+import com.pro.study.dto.workflow.WorkFlowDTO;
+import com.pro.study.enums.NodeEnum;
 import com.pro.study.enums.SysDicEnum;
 import com.pro.study.po.company.Company;
 import com.pro.study.po.company.CompanyProductLink;
 import com.pro.study.po.product.Product;
-import com.pro.study.po.workflow.ProWorkFlow;
 import com.pro.study.service.company.CompanyService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
 import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 /** 
@@ -77,6 +82,9 @@ public class CompanyServiceImpl implements CompanyService{
 	
 	@Autowired
 	private LoanApplyMybatisDao loanApplyDao;
+	
+	@Autowired
+	private WorkFlowMybatisDao workFlowDao;
 	
 	/**
 	 * 获取公司信息
@@ -161,11 +169,11 @@ public class CompanyServiceImpl implements CompanyService{
 	public WorkFLowResponseVO createWorkFlow(UserInfoDTO user,WorkFlowRequestVO workflow) {
 		WorkFLowResponseVO result = new WorkFLowResponseVO();
 		try {
-			ProWorkFlow proWorkFlow = new ProWorkFlow();
-			proWorkFlow.setWorkflowName(workflow.getName());
-			proWorkFlow.setCompanyId(user.getCompanyId());
-			proWorkFlow.setWorkflowDescribe(workflow.getDescribe());
-			workFlowRepository.save(proWorkFlow);
+			WorkFlowDTO workFlow = new WorkFlowDTO();
+			workFlow.setWorkflowName(workflow.getName());
+			workFlow.setCompanyId(user.getCompanyId());
+			workFlow.setProductId(workflow.getProductId());
+			workFlowDao.insertWorkFlow(workFlow);
 			return result.success(workflow.getName());
 		}catch (Exception e) {
 			return result.faild();
@@ -220,6 +228,27 @@ public class CompanyServiceImpl implements CompanyService{
 			return CheckLoanFormReponseVO.returnSucess(pageData);
 		}catch (Exception e) {
 			return CheckLoanFormReponseVO.returnFaild();
+		}
+	}
+	
+	/**
+	 * 创建节点
+	 */
+	@Override
+	public NodeResponseVO createNode(UserInfoDTO user, NodeRequestVO node) {
+		try {
+			NodeResponseVO result = new NodeResponseVO(SysDicEnum.SUCCESS.getCode(),"节点添加成功");
+			NodeDTO nodeData = new NodeDTO();
+			nodeData.setDescribe(node.getNodeDescribe());
+			nodeData.setName(node.getNodeName());
+			nodeData.setNodeType(NodeEnum.CUSTOM_NODE.getCode());
+			workFlowDao.insertNode(nodeData);
+			result.setNodeId(nodeData.getId());
+			result.setNodeName(nodeData.getName());
+			return result;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new NodeResponseVO(SysDicEnum.ERROR.getCode(),"节点添加失败");
 		}
 	}
 }

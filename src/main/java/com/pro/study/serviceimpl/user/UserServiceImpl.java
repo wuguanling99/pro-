@@ -1,7 +1,6 @@
 package com.pro.study.serviceimpl.user;
 
 import java.text.ParseException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -12,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lambdaworks.crypto.SCryptUtil;
 import com.pro.study.dao.role.ProRoleRepository;
+import com.pro.study.dao.user.UserMybatisDao;
 import com.pro.study.dao.user.UserRepository;
+import com.pro.study.dto.user.UserBaseInfoDTO;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.SysDicEnum;
 import com.pro.study.enums.SysRoleEnum;
@@ -25,15 +27,18 @@ import com.pro.study.service.user.UserService;
 import com.pro.study.utils.ETLUtil;
 import com.pro.study.utils.IdCardUtil;
 import com.pro.study.utils.JWTUtil;
-import com.pro.study.utils.RSAKeyUtils;
+import com.pro.study.utils.OSSClientUtil;
 import com.pro.study.utils.ResponseUtils;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
+import com.pro.study.vo.request.user.UserBaseInfoRequestVO;
 import com.pro.study.vo.request.user.UserLoginVO;
+import com.pro.study.vo.response.sys.ImageReponseVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
+import com.pro.study.vo.response.user.UserBaseBaseInfoReponseVO;
 
 /** 
 * @author: wgl
@@ -49,6 +54,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserMybatisDao userDao;
 	@Autowired
 	private ProRoleRepository roleMapper;
 	@Autowired
@@ -150,6 +157,71 @@ public class UserServiceImpl implements UserService {
 		result.setAge(IdCardUtil.getAge(userPo.getIdCard()));
 		result.setSexByEnum(IdCardUtil.getSex(userPo.getIdCard()));
 		return result;
+	}
+	
+	/**
+	 * 获取用户基本信息
+	 */
+	@Override
+	public UserBaseBaseInfoReponseVO getBaseUserInfo(UserInfoDTO user) {
+		Long userId = user.getUserId();
+		try {
+			//获取用户基本信息
+			UserBaseInfoDTO userBaseInfo = userDao.findUser(userId,SysDicEnum.SYS_VALID.getCode());
+			UserBaseBaseInfoReponseVO result = new UserBaseBaseInfoReponseVO(SysDicEnum.SUCCESS.getCode(),"数据获取成功");
+			result.setUserId(userBaseInfo.getId());
+			result.setEmail(userBaseInfo.getEmail());
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String url = ossClientUtil.getHeadImageUrl(userBaseInfo.getHead_image());
+			result.setHeadImage(url);
+			result.setIdCard(ETLUtil.etlIdCard(userBaseInfo.getId_card()));
+			result.setName(userBaseInfo.getName());
+			result.setPhoneNumber(ETLUtil.etlPhoneNumber(userBaseInfo.getPhone_number()));
+			return result; 
+		}catch (Exception e) {
+			return new UserBaseBaseInfoReponseVO(SysDicEnum.ERROR.getCode(),"用户信息获取失败");
+		}
+	}
+	
+	/**
+	 * 修改用户基本信息
+	 */
+	@Override
+	public UserBaseBaseInfoReponseVO updateBaseInfo(UserBaseInfoRequestVO userBaseInfo) {
+		try {
+			//判断是否修改了手机号
+			String phoneNumber = userBaseInfo.getPhoneNumber();
+			if(ETLUtil.isETLPhoneNumber(phoneNumber)) {
+				//查询原来的手机号并赋值
+				UserBaseInfoDTO user = userDao.findUser(userBaseInfo.getUserId(), SysDicEnum.SYS_VALID.getCode());
+				userBaseInfo.setPhoneNumber(user.getPhone_number());
+			}
+			userDao.updateUserInfo(userBaseInfo);
+			UserBaseBaseInfoReponseVO result = new UserBaseBaseInfoReponseVO(SysDicEnum.SUCCESS.getCode(),"信息修改成功");
+			result.setUserId(userBaseInfo.getUserId());
+			result.setEmail(userBaseInfo.getEmail());
+			result.setHeadImage(userBaseInfo.getHeadImage());
+			result.setPhoneNumber(ETLUtil.etlPhoneNumber(userBaseInfo.getPhoneNumber()));
+			return result;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new UserBaseBaseInfoReponseVO(SysDicEnum.ERROR.getCode(),"信息修改失败");
+		}
+	}
+	
+	/**
+	 * 头像上传
+	 */
+	@Override
+	public ImageReponseVO uploadUserHeadImage(UserInfoDTO userInfoDTO, MultipartFile file) {
+		try {
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String key = ossClientUtil.uploadImgHeadImage(file,userInfoDTO.getUserId());
+			String url = ossClientUtil.getHeadImageUrl(key);
+			return new ImageReponseVO(SysDicEnum.SUCCESS.getCode(),"图片上传成功",url,key);
+		}catch (Exception e) {
+			return new ImageReponseVO(SysDicEnum.ERROR.getCode(),"图片上传失败");
+		}
 	}
 
 }

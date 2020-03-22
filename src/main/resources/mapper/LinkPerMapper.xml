@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.loan_apply.LinkPerMybatisDao">
+	<insert id="addLinker"  parameterType="java.util.List">
+	    INSERT INTO `loan_applicant_link_info` (
+	    `link_per_location`,
+	    `link_per_name`,
+	    `link_per_phone_number`,
+	    `link_per_type`,
+	    `order_id`)
+	    VALUES
+	    <foreach collection="list" item="item" index="index" separator="," >
+	    (
+	      #{item.location},
+	      #{item.name},
+	      #{item.phoneNumber},
+	      #{item.relationship},
+	      #{item.orderId}
+	    )
+	    </foreach>
+	</insert>
+</mapper>

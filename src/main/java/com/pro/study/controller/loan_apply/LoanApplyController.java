@@ -20,9 +20,11 @@ import com.pro.study.service.user.UserService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.sys.SearchPageInfoRequestVO;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
-import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
+import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.SysListResponseVO;
 import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 
 /** 
@@ -68,17 +70,6 @@ public class LoanApplyController {
 	
 	/**
 	 * 
-	* @Description:（图片上传） 
-	* 方法返回值: @param file
-	* 方法返回值: @return
-	 */
-	@PostMapping("/uploadImage")
-	public ImageResponseVO  uploadImage(@RequestParam("file") MultipartFile file) {
-		return loanApplyService.uploadImage(file);
-	}
-	
-	/**
-	 * 
 	* @Description:（根据用户获取用户已申请贷款列表） 待审核
 	* 方法返回值: @param request
 	* 方法返回值: @return
@@ -86,5 +77,54 @@ public class LoanApplyController {
 	@GetMapping("/getMyLoanApplyTableList")
 	public List<LoanApplyFromResponseVo> getMyLoanApplyTableList(HttpServletRequest request,@RequestBody PageInfo page) {
 		return loanApplyService.getLoanApplyTableListByUser(UserUtils.getUser(request),page);
+	}
+	
+	/**
+	 * 
+	* @Description:（根据用户获取用户已申请贷款列表）
+	* 方法返回值: @param request
+	* 方法返回值: @return
+	 */
+	@GetMapping("/searchLoanTable")
+	public SysListResponseVO searchLoanTable(HttpServletRequest request,@RequestBody SearchPageInfoRequestVO searchPageInfo) {
+		return loanApplyService.searchLoanTable(UserUtils.getUser(request),searchPageInfo);
+	}
+	
+	/**
+	 * 
+	* @Description:（身份证照片上传） 
+	* 方法返回值: @param request
+	* 方法返回值: @param file
+	* 方法返回值: @param face 正反面标志
+	* 方法返回值: @return
+	 */
+	@PostMapping("/uploadPerIdCardImage")
+	public ImageReponseVO uploadPerIdCardImage(HttpServletRequest request,@RequestParam(value = "file") MultipartFile file,@RequestParam(value="face")Integer face) {
+		return loanApplyService.uploadPerIdCardImage(UserUtils.getUser(request),face,file);
+	}
+	
+	/**
+	 * 
+	* @Description:（银行卡正反面上传） 
+	* 方法返回值: @param request
+	* 方法返回值: @param file
+	* 方法返回值: @param face 正反面标志
+	* 方法返回值: @return
+	 */
+	@PostMapping("/uploadBankCardImage")
+	public ImageReponseVO uploadBankCardImage(HttpServletRequest request,@RequestParam(value = "file") MultipartFile file,@RequestParam(value="face")Integer face) {
+		return loanApplyService.uploadBankCardImage(UserUtils.getUser(request),face,file);
+	}
+	/**
+	 * 
+	* @Description:（信用卡正反面上传） 
+	* 方法返回值: @param request
+	* 方法返回值: @param file
+	* 方法返回值: @param face 正反面标志
+	* 方法返回值: @return
+	 */
+	@PostMapping("/uploadCreditCardImage")
+	public ImageReponseVO uploadCreditCardImage(HttpServletRequest request,@RequestParam(value = "file") MultipartFile file,@RequestParam(value="face")Integer face) {
+		return loanApplyService.uploadCreditCardImage(UserUtils.getUser(request),face,file);
 	}
 }

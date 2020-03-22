@@ -4,12 +4,18 @@ import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
+import com.pro.study.vo.request.user.UserBaseInfoRequestVO;
 import com.pro.study.vo.request.user.UserLoginVO;
+import com.pro.study.vo.response.sys.ImageReponseVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
+import com.pro.study.vo.response.user.UserBaseBaseInfoReponseVO;
 
 /** 
 * @author: wgl
@@ -51,5 +57,31 @@ public interface UserService {
 	* 方法返回值: @return
 	 */
 	LoanApplyTableUserBaseInfoVO getBaseUserInfo(HttpServletRequest request) throws ParseException;
+
+	/**
+	 * 
+	* @Description:（获取用户基本信息） 
+	* 方法返回值: @param user
+	* 方法返回值: @return
+	 */
+	UserBaseBaseInfoReponseVO getBaseUserInfo(UserInfoDTO user);
+	
+	/**
+	 * 
+	* @Description:（修改个人基本信息） 
+	* 方法返回值: @param user
+	* 方法返回值: @return
+	 */
+	UserBaseBaseInfoReponseVO updateBaseInfo(UserBaseInfoRequestVO userBaseInfo);
+
+	/**
+	 * 
+	* @param userInfoDTO 
+	 * @Description:（上传头像） 
+	 * 方法返回值: @param user
+	* 方法返回值: @param file
+	* 方法返回值: @return
+	 */
+	ImageReponseVO uploadUserHeadImage(UserInfoDTO userInfoDTO, MultipartFile file);
 
 }

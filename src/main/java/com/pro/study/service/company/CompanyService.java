@@ -6,11 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 /** 
@@ -70,5 +72,8 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	CheckLoanFormReponseVO getAllAuditedList(UserInfoDTO user, PageInfo page);
+	
+	
+	NodeResponseVO createNode(UserInfoDTO user, NodeRequestVO node);
 
 }

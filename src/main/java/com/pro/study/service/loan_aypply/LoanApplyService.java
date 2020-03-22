@@ -9,9 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.request.loan_apply.LoanApplyTableRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.sys.SearchPageInfoRequestVO;
 import com.pro.study.vo.response.loan_apply.CreateLoanApplyTableResponseVO;
 import com.pro.study.vo.response.loan_apply.ImageResponseVO;
 import com.pro.study.vo.response.loan_apply.LoanApplyFromResponseVo;
+import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.SysListResponseVO;
 
 /** 
 * @author: wgl
@@ -45,5 +48,44 @@ public interface LoanApplyService {
 	* 方法返回值: @return
 	 */
 	List<LoanApplyFromResponseVo> getLoanApplyTableListByUser(UserInfoDTO user, PageInfo page);
+	
+	/**
+	 * 
+	* @Description:（获取贷款列表） 
+	* 方法返回值: @param user
+	* 方法返回值: @param searchPageInfo
+	* 方法返回值: @return
+	 */
+	SysListResponseVO searchLoanTable(UserInfoDTO user, SearchPageInfoRequestVO searchPageInfo);
+	
+	/**
+	 * 
+	* @Description:（身份证上传） 
+	* 方法返回值: @param user
+	* 方法返回值: @param face
+	* 方法返回值: @param file
+	* 方法返回值: @return
+	 */
+	ImageReponseVO uploadPerIdCardImage(UserInfoDTO user, Integer face, MultipartFile file);
+	
+	/**
+	 * 
+	* @Description:（上传银行卡正反面） 
+	* 方法返回值: @param user
+	* 方法返回值: @param face
+	* 方法返回值: @param file
+	* 方法返回值: @return
+	 */
+	ImageReponseVO uploadBankCardImage(UserInfoDTO user, Integer face, MultipartFile file);
+	
+	/**
+	 * 
+	* @Description:（上传信用卡正反面） 
+	* 方法返回值: @param user
+	* 方法返回值: @param face
+	* 方法返回值: @param file
+	* 方法返回值: @return
+	 */
+	ImageReponseVO uploadCreditCardImage(UserInfoDTO user, Integer face, MultipartFile file);
 
 }

@@ -1,6 +1,8 @@
 package com.pro.study.vo.request.loan_apply;
 
-import javax.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -9,12 +11,15 @@ import javax.persistence.Column;
 * @version:1.0
 * @Description:信用卡信息
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreditCardInfo {
 	
 	/**
 	 * 信用卡卡号
 	 */
-	private Integer creditCardCode;
+	private String creditCardCode;
 	
 	/**
 	 * 信用卡开户行
@@ -22,7 +27,7 @@ public class CreditCardInfo {
 	private String creditName;
 	
 	/**
-	 * 信用卡卡号
+	 * 信用卡正面
 	 */
 	private String creditCardUpImage;
 

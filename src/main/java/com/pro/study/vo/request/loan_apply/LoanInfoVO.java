@@ -38,4 +38,9 @@ public class LoanInfoVO {
 	 * 还款值
 	 */
 	private Integer repayment;
+	
+	/**
+	 * 贷款金额
+	 */
+	private Integer amount;
 }

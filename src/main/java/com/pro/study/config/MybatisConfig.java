@@ -42,9 +42,6 @@ public class MybatisConfig {
 
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		//mybatis配置
-		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("mybatis-config.xml"));
-//		sqlSessionFactoryBean.setConfigLocation(
-//                new DefaultResourceLoader().getResource("classpath:/mybatis-config.xml"));
 		sqlSessionFactoryBean.setDataSource(dataSource());
 
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.role.MenuMybatisDao">
+	<insert id="insertMenu" parameterType="com.pro.study.po.role.Menu" >
+		INSERT INTO 
+		`menu` 
+		(`pid`,`menu_name`,`menu_url`,`role_id`) 
+		VALUES 
+		(#{menu.pid},#{menu.menuName},#{menu.menuUrl},#{menu.roleId})
+	</insert>
+</mapper>

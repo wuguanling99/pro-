@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pro.study.dao.loan_apply.LoanApplyOrderMybatisDao">
+	<insert id="insertLoanOrder" keyProperty="order.id" useGeneratedKeys="true" parameterType="com.pro.study.dto.loanApply.LoanApplyOrderDTO">
+		INSERT INTO `loan_order` 
+		(`company_id`,`use_type`,`order_type`,`product_id`,`repay_type`,`repayment`,`user_id`) 
+		VALUES 
+		(${order.companyId},${order.useType},${order.orderType},${order.productId},${order.repayType},${order.repayment},${order.userId})
+	</insert>
+</mapper>

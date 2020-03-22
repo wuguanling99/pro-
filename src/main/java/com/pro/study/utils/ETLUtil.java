@@ -27,4 +27,14 @@ public class ETLUtil {
 		return idCard.replaceAll("(?<=\\w{3})\\w(?=\\w{4})", "*");
 	}
 	
+	/**
+	 * 
+	* @Description:（判断是否是数据清洗后的数据）
+	* 方法返回值: @param phoneNumber
+	* 方法返回值: @return
+	 */
+	public static boolean isETLPhoneNumber(String phoneNumber) {
+		return phoneNumber.contains("****") ? true:false;
+	}
+	
 }

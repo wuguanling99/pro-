@@ -1,6 +1,8 @@
 package com.pro.study.vo.request.loan_apply;
 
-import javax.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** 
 * @author: wgl
@@ -8,6 +10,9 @@ import javax.persistence.Column;
 * @version:1.0
 * @Description: 联系人信息
 */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LinkPerInfo {
 	/**
 	 * 联系人姓名

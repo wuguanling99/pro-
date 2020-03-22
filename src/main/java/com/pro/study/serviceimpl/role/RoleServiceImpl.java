@@ -14,16 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pro.study.dao.role.MenuRepository;
-import com.pro.study.dao.role.ProAuthRepository;
+import com.pro.study.dao.role.ProAuthMybatisDao;
 import com.pro.study.dao.role.ProRoleRepository;
+import com.pro.study.dao.role.RoleMybatisDao;
+import com.pro.study.dto.role.AuthDTO;
+import com.pro.study.dto.role.RoleDto;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.SysDicEnum;
 import com.pro.study.enums.SysRoleEnum;
 import com.pro.study.po.role.Menu;
-import com.pro.study.po.role.ProAuth;
 import com.pro.study.po.role.ProRole;
 import com.pro.study.service.role.RoleService;
-import com.pro.study.utils.JsonUtil;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.response.role.MenuResponseVO;
 
@@ -41,7 +42,10 @@ public class RoleServiceImpl implements RoleService {
 	private ProRoleRepository roleMapper;
 	
 	@Autowired
-	private ProAuthRepository authMapper;
+	private RoleMybatisDao roleDao;
+	
+	@Autowired
+	private ProAuthMybatisDao authDao;
 	
 	@Autowired
 	private MenuRepository menuResitory;
@@ -80,19 +84,19 @@ public class RoleServiceImpl implements RoleService {
 			roleNameSet.add(companyControl.getRoleName());
 		}
 		//查询所有的接口
-		List<ProAuth> allUrl = authMapper.findByDeleteFlag(SysDicEnum.SYS_VALID.getCode());
-		Map<String, List<ProAuth>> groupByRoleNameAuth = allUrl.stream().collect(Collectors.groupingBy(ProAuth::getRoleName));
+		List<AuthDTO> allUrl = authDao.findByAllUrl(SysDicEnum.SYS_VALID.getCode());
+		Map<String, List<AuthDTO>> groupByRoleNameAuth = allUrl.stream().collect(Collectors.groupingBy(AuthDTO::getRole_name));
 		//按照角色名分配url
 		List<String>  passUrlList = new ArrayList<String>();
 		Set<String> keySet = groupByRoleNameAuth.keySet();
 		for (String roleName : keySet) {
-			List<ProAuth> authList = groupByRoleNameAuth.get(roleName);
+			List<AuthDTO> authList = groupByRoleNameAuth.get(roleName);
 			if(SysRoleEnum.PASSROLE.getRole().equals(roleName)) {
 				//可以直接通过的接口
-				passUrlList = authList.stream().map(ProAuth::getUrl).collect(Collectors.toList());
+				passUrlList = authList.stream().map(AuthDTO::getAuth_url).collect(Collectors.toList());
 			}else {
 			List<String> urlList = new ArrayList<String>();
-			result.put(roleName, authList.stream().map(ProAuth::getUrl).collect(Collectors.toList()));
+			result.put(roleName, authList.stream().map(AuthDTO::getAuth_url).collect(Collectors.toList()));
 			}
 		}
 		result.put(SysRoleEnum.PASSROLE.getRole(), passUrlList);
@@ -104,8 +108,8 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public List<String> getNeedDecryPermitUrls() {
-		List<ProAuth> authList = authMapper.findByDecryptFlag(SysDicEnum.NEED.getCode());
-		return authList.stream().map(ProAuth::getUrl).collect(Collectors.toList());
+		List<AuthDTO> authList = authDao.findByDecryptFlagAndDeleteFlag(SysDicEnum.NEED.getCode(),SysDicEnum.SYS_VALID.getCode());
+		return authList.stream().map(AuthDTO::getAuth_url).collect(Collectors.toList());
 	}
 	
 	/**
@@ -113,8 +117,8 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public List<String> getDontNeedDecryPermitUrls() {
-		List<ProAuth> authList = authMapper.findByDecryptFlag(SysDicEnum.DONTNEED.getCode());
-		return authList.stream().map(ProAuth::getUrl).collect(Collectors.toList());
+		List<AuthDTO> authList = authDao.findByDecryptFlagAndDeleteFlag(SysDicEnum.DONTNEED.getCode(),SysDicEnum.SYS_VALID.getCode());
+		return authList.stream().map(AuthDTO::getAuth_url).collect(Collectors.toList());
 	}
 	
 	/**

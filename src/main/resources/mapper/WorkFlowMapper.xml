@@ -1,21 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pro.study.dao.workflow.WorkFlowMybatisDao">
-	<insert id="insertWorkFlow"  parameterType="com.pro.study.dto.workflow.WorkFlowDTO">
+	<insert id="insertWorkFlow"  parameterType="com.pro.study.dto.workflow.WorkFlowDTO" keyProperty="workflow.id" useGeneratedKeys="true">
 		INSERT INTO `pro_workflow` (
 		`company_id`,
 		`product_id`,
 		`workflow_describe`,
 		`workflow_name`) 
 		VALUES  (
-		${workflow.companyId},
-		${workflow.productId},
-		${workflow.describe},
-		${workflow.workflowName}
+		#{workflow.companyId},
+		#{workflow.productId},
+		#{workflow.describe},
+		#{workflow.workflowName}
 		)
 	</insert>
 	
 	<insert id="insertNode" parameterType="com.pro.study.dto.workflow.NodeDTO" keyProperty="node.id" useGeneratedKeys="true">
 		INSERT INTO `step_node` (`step_name`,`step_describe`,`step_type`) VALUES (#{node.name},#{node.describe},#{node.nodeType})
+	</insert>
+	
+	<update id="updateNodeAndNextCode" parameterType="java.util.List">
+		<foreach collection="node" item="item" index="index"  separator=";">
+	        UPDATE `step_node`
+	        <set>
+	        	pass_node_id=#{item.nextId},
+	        	workflow_id=#{item.workflowId},
+	        	start_stop=#{item.startStop}
+           </set>
+	        where 
+	        id = #{item.id}
+	    </foreach> 
+	</update>
+	<insert id="insertRuleField" parameterType="com.pro.study.dto.workflow.RuleFieldDTO">
+		INSERT INTO `pro_rule_field` 
+		(`company_id`,`field_name`,`json_path`) 
+		VALUES 
+		(${ruleField.companyId},${ruleField.fieldName},${ruleField.jsonPath})
+	</insert>
+	
+	<insert id="insertRuleFieldDicList" parameterType="java.util.List">
+		INSERT INTO `rule_field_dic` 
+		(`field_dic_name`,`field_value`,`field_id`,`sys_field_value`) 
+		VALUES 
+		<foreach collection="ruleDicList" item="item" index="index" separator="," >
+		(
+	      #{item.fieldName},
+	      #{item.sysValue},
+	      #{item.fieldId},
+	      #{item.keyValue}
+	    )
+		</foreach>
 	</insert>
 </mapper>

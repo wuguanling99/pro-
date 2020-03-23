@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
+import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
 import com.pro.study.vo.response.workflow.NodeResponseVO;
+import com.pro.study.vo.response.workflow.RuleFieldReponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 /** 
@@ -73,7 +75,22 @@ public interface CompanyService {
 	 */
 	CheckLoanFormReponseVO getAllAuditedList(UserInfoDTO user, PageInfo page);
 	
-	
+	/**
+	 * 
+	* @Description:（创建节点） 
+	* 方法返回值: @param user
+	* 方法返回值: @param node
+	* 方法返回值: @return
+	 */
 	NodeResponseVO createNode(UserInfoDTO user, NodeRequestVO node);
+
+	/**
+	 * 
+	* @Description:（创建规则字段） 
+	* 方法返回值: @param user
+	* 方法返回值: @param ruleField
+	* 方法返回值: @return
+	 */
+	RuleFieldReponseVO createRuleField(UserInfoDTO user, RuleFieldRequestVO ruleField);
 
 }

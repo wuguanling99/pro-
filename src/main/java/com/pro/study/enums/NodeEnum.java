@@ -15,8 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum NodeEnum {
-	SYS_NODE(0,"系统节点"),
-	CUSTOM_NODE(1,"自定义节点"),
+	//========启动节点==========
+	START_CODE(0,"启动节点"),
+	END_CODE(-1,"结束节点"),
+	ING(1,"过程中节点"),
+	//========节点类型==========
+	NODE_TYPE_SYS_NODE(0,"系统节点"),
+	NODE_TYPE_CUSTOM_NODE(1,"自定义节点"),
 	;
 	private Integer code;
 	

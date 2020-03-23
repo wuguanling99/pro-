@@ -51,4 +51,10 @@ public class StepNode extends BasePojo{
 	 */
 	@Column(name = "pass_node_id",columnDefinition="int(2) COMMENT '通过的话下一个节点id'")
 	private Integer passNodeId;
+	
+	/**
+	 * 下一个节点id
+	 */
+	@Column(name = "start_stop",columnDefinition="int(2) COMMENT '通过的话下一个节点id'")
+	private Integer startOrStop;
 }

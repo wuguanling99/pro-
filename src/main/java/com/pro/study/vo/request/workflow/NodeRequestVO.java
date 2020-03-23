@@ -18,4 +18,9 @@ public class NodeRequestVO {
 	 * 节点描述
 	 */
 	private String nodeDescribe;
+
+	/**
+	 * id
+	 */
+	private Long id;
 }

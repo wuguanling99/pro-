@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,10 @@ import com.pro.study.dto.company.LocationMapDto;
 import com.pro.study.dto.company.ProductDto;
 import com.pro.study.dto.sys.LimitDto;
 import com.pro.study.dto.user.UserInfoDTO;
+import com.pro.study.dto.workflow.NodeAndNextNodeDTO;
 import com.pro.study.dto.workflow.NodeDTO;
+import com.pro.study.dto.workflow.RuleFieldDTO;
+import com.pro.study.dto.workflow.RuleFieldDicDTO;
 import com.pro.study.dto.workflow.WorkFlowDTO;
 import com.pro.study.enums.NodeEnum;
 import com.pro.study.enums.SysDicEnum;
@@ -39,6 +43,8 @@ import com.pro.study.service.company.CompanyService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
+import com.pro.study.vo.request.workflow.RuleFieldDicVO;
+import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
@@ -46,6 +52,7 @@ import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
 import com.pro.study.vo.response.sys.Page;
 import com.pro.study.vo.response.workflow.NodeResponseVO;
+import com.pro.study.vo.response.workflow.RuleFieldReponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
 
 /** 
@@ -166,6 +173,7 @@ public class CompanyServiceImpl implements CompanyService{
 	 * 创建工作流
 	 */
 	@Override
+	@Transactional
 	public WorkFLowResponseVO createWorkFlow(UserInfoDTO user,WorkFlowRequestVO workflow) {
 		WorkFLowResponseVO result = new WorkFLowResponseVO();
 		try {
@@ -173,9 +181,32 @@ public class CompanyServiceImpl implements CompanyService{
 			workFlow.setWorkflowName(workflow.getName());
 			workFlow.setCompanyId(user.getCompanyId());
 			workFlow.setProductId(workflow.getProductId());
+			workFlow.setDescribe(workflow.getDescribe());
+			List<NodeRequestVO> nodeList = workflow.getNodeList();
 			workFlowDao.insertWorkFlow(workFlow);
+			Long workFlowId = workFlow.getId();
+			List<NodeAndNextNodeDTO> nodeAndNextList = new ArrayList<NodeAndNextNodeDTO>();
+			for(int i=0;i<nodeList.size();i++) {
+				NodeAndNextNodeDTO nodeAndNextNodeDTO = new NodeAndNextNodeDTO();
+				nodeAndNextNodeDTO.setId(nodeList.get(i).getId());
+				nodeAndNextNodeDTO.setWorkflowId(workFlowId);
+				if(i==0) {
+					//证明是初识节点
+					nodeAndNextNodeDTO.setStartStop(NodeEnum.START_CODE.getCode());
+					nodeAndNextNodeDTO.setNextId(nodeList.get(i+1).getId());
+				}else if(i==nodeList.size()-1) {
+					nodeAndNextNodeDTO.setStartStop(NodeEnum.END_CODE.getCode());
+					nodeAndNextNodeDTO.setNextId(Long.valueOf(NodeEnum.END_CODE.getCode()));
+				}else if(nodeList.size()-1 >= i){
+					nodeAndNextNodeDTO.setNextId(nodeList.get(i+1).getId());
+					nodeAndNextNodeDTO.setStartStop(NodeEnum.ING.getCode());
+				}
+				nodeAndNextList.add(nodeAndNextNodeDTO);
+			}
+			workFlowDao.updateNodeAndNextCode(nodeAndNextList);
 			return result.success(workflow.getName());
 		}catch (Exception e) {
+			e.printStackTrace();
 			return result.faild();
 		}
 	}
@@ -237,18 +268,54 @@ public class CompanyServiceImpl implements CompanyService{
 	@Override
 	public NodeResponseVO createNode(UserInfoDTO user, NodeRequestVO node) {
 		try {
-			NodeResponseVO result = new NodeResponseVO(SysDicEnum.SUCCESS.getCode(),"节点添加成功");
 			NodeDTO nodeData = new NodeDTO();
 			nodeData.setDescribe(node.getNodeDescribe());
 			nodeData.setName(node.getNodeName());
-			nodeData.setNodeType(NodeEnum.CUSTOM_NODE.getCode());
+			nodeData.setNodeType(NodeEnum.NODE_TYPE_CUSTOM_NODE.getCode());
 			workFlowDao.insertNode(nodeData);
+			NodeResponseVO result = new NodeResponseVO(SysDicEnum.SUCCESS.getCode(),"节点添加成功");
 			result.setNodeId(nodeData.getId());
+			result.setNodeDecribe(nodeData.getDescribe());
 			result.setNodeName(nodeData.getName());
 			return result;
 		}catch (Exception e) {
 			e.printStackTrace();
 			return new NodeResponseVO(SysDicEnum.ERROR.getCode(),"节点添加失败");
+		}
+	}
+	
+	/**
+	 * 创建规则字段
+	 */
+	@Override
+	public RuleFieldReponseVO createRuleField(UserInfoDTO user, RuleFieldRequestVO ruleField) {
+		try {
+			String fieldName = ruleField.getFieldName();
+			String jsonPath = ruleField.getJsonPath();
+			List<RuleFieldDicVO> rueFieldList = ruleField.getRueFieldList();
+			RuleFieldDTO ruleFieldDTO = new RuleFieldDTO();
+			ruleFieldDTO.setCompanyId(user.getUserId());
+			ruleFieldDTO.setFieldName(fieldName);
+			ruleFieldDTO.setJsonPath(jsonPath);
+			//添加规则字段
+			workFlowDao.insertRuleField(ruleFieldDTO);
+			//添加规则字典
+			List<RuleFieldDicDTO> ruleDicList = new ArrayList<RuleFieldDicDTO>();
+			for (RuleFieldDicVO index : rueFieldList) {
+				RuleFieldDicDTO ruleDicDTO = new RuleFieldDicDTO();
+				ruleDicDTO.setFieldId(ruleFieldDTO.getId());
+				ruleDicDTO.setFieldName(fieldName);
+				ruleDicDTO.setKeyValue(index.getFieldValue());
+				ruleDicDTO.setSysValue(index.getSysValue());
+				ruleDicList.add(ruleDicDTO);
+			}
+			workFlowDao.insertRuleFieldDicList(ruleDicList);
+			RuleFieldReponseVO result = new RuleFieldReponseVO(SysDicEnum.SUCCESS.getCode(),"数据添加成功");
+			result.setId(ruleFieldDTO.getId());
+			result.setFieldName(ruleFieldDTO.getFieldName());
+			return result;
+		}catch (Exception e) {
+			return new RuleFieldReponseVO(SysDicEnum.ERROR.getCode(),"数据添加失败");
 		}
 	}
 }

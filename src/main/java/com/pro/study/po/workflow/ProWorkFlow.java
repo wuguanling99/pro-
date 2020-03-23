@@ -41,7 +41,7 @@ public class ProWorkFlow extends BasePojo{
 	/**
 	 * 工作流描述
 	 */
-	@Column(name = "workflow_describe",nullable=false,columnDefinition="varchar(255) COMMENT '工作流描述'")
+	@Column(name = "workflow_describe",columnDefinition="varchar(255) COMMENT '工作流描述'")
 	private String workflowDescribe;
 	
 

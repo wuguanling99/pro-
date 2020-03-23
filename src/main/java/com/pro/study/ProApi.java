@@ -23,5 +23,4 @@ public class ProApi{
 		SpringApplication.run(ProApi.class, args);
 	}
 	
-	
 }

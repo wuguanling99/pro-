@@ -62,8 +62,12 @@ public class AuthTest {
 //		ProAuth uploadBankCardImage = new ProAuth(2L,SysRoleEnum.LOAN_APPLY.getRole(),"/loanApply/uploadBankCardImage",SysDicEnum.NEED.getCode(),SysDicEnum.DONTNEED.getCode());
 //		userDao.insertUser(uploadBankCardImage);
 		//===============公司管理员接口==========================
-		ProAuth createNode = new ProAuth(4L,SysRoleEnum.COMPANY_MANAGER.getRole(),"/company/createNode",SysDicEnum.NEED.getCode(),SysDicEnum.NEED.getCode());
-		userDao.insertUser(createNode);
+//		ProAuth createNode = new ProAuth(4L,SysRoleEnum.COMPANY_MANAGER.getRole(),"/company/createNode",SysDicEnum.NEED.getCode(),SysDicEnum.NEED.getCode());
+//		userDao.insertUser(createNode);
+//		ProAuth createWorkFlow = new ProAuth(4L,SysRoleEnum.COMPANY_MANAGER.getRole(),"/company/createWorkFlow",SysDicEnum.NEED.getCode(),SysDicEnum.NEED.getCode());
+//		userDao.insertUser(createWorkFlow);
+		ProAuth createRuleField = new ProAuth(4L,SysRoleEnum.COMPANY_MANAGER.getRole(),"/company/createRuleField",SysDicEnum.NEED.getCode(),SysDicEnum.NEED.getCode());
+		userDao.insertUser(createRuleField);
 //		ArrayList<ProAuth> menuList = new ArrayList<ProAuth>();
 //		menuList.add(new ProAuth(null,SysRoleEnum.IT_ADMIN.getRole(),"/role/getMenu",SysDicEnum.NEED.getCode(),SysDicEnum.DONTNEED.getCode()));
 //		menuList.add(new ProAuth(null,SysRoleEnum.CHECK.getRole(),"/role/getMenu",SysDicEnum.NEED.getCode(),SysDicEnum.DONTNEED.getCode()));

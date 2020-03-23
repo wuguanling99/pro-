@@ -14,11 +14,14 @@ public class NodeResponseVO extends SysResponseVO{
 	private Long nodeId;
 
 	private String nodeName;
+	
+	private String nodeDecribe;
 
-	public NodeResponseVO(Integer code, String message, Long nodeId, String nodeName) {
+	public NodeResponseVO(Integer code, String message, Long nodeId, String nodeName, String nodeDecribe) {
 		super(code, message);
 		this.nodeId = nodeId;
 		this.nodeName = nodeName;
+		this.nodeDecribe = nodeDecribe;
 	}
 
 	public NodeResponseVO(Integer code, String message) {
@@ -42,9 +45,17 @@ public class NodeResponseVO extends SysResponseVO{
 		this.nodeName = nodeName;
 	}
 
+	public String getNodeDecribe() {
+		return nodeDecribe;
+	}
+
+	public void setNodeDecribe(String nodeDecribe) {
+		this.nodeDecribe = nodeDecribe;
+	}
+
 	@Override
 	public String toString() {
-		return "NodeResponseVO [nodeId=" + nodeId + ", nodeName=" + nodeName + "]";
+		return "NodeResponseVO [nodeId=" + nodeId + ", nodeName=" + nodeName + ", nodeDecribe=" + nodeDecribe + "]";
 	}
-	
+
 }

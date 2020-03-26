@@ -21,4 +21,92 @@
 		            ON a.product_id = loan_order.`product_id` )
 		    GROUP BY  `native_city`
     </select>
+    
+    <select id="getProductByCompanyId" resultType="com.pro.study.dto.company.ProductDto">
+    	SELECT id,product_name AS name  FROM `product` WHERE company_id = #{companyId} AND delete_flag = 0
+    </select>
+    
+    <select id="getProductDetailByPage"  resultType="com.pro.study.dto.company.ProductDetailDTO" parameterType="com.pro.study.dto.sys.LimitDto">
+    	SELECT 
+    	id AS productId,
+    	`product_name` AS productName,
+    	`product_describe` AS productDecribe,
+    	`product_logo` AS logoKey
+    	 FROM `product`
+    	  WHERE 
+    	  `delete_flag` = 0 AND `company_id` = #{companyId} 
+    	  LIMIT 
+    	  #{page.limitStart},#{page.limitEnd}
+    </select>
+    
+    <select id="getAllProductSize"  resultType="java.lang.Integer">
+    	SELECT COUNT(ID) FROM `product` WHERE `delete_flag` = 0 AND `company_id` = #{companyId}
+    </select>
+    
+    <update id="updateProductInfo" parameterType="com.pro.study.vo.request.product.ProductRequestVO">
+    	UPDATE `product` 
+    	SET 
+    	company_id =#{companyId},
+    	product_describe = #{product.productDescribe},
+    	product_name = #{product.productName},
+    	product_logo = #{product.logoKey} 
+    	WHERE 
+    	id = #{companyId}
+    </update>
+    
+    <select id="getRuleField"  resultType="com.pro.study.dto.workflow.RuleFieldAndDicDTO">
+    	SELECT 
+    	rule.id AS fieldId , 
+    	rule.`field_name` AS fieldName,
+    	dic.id AS fieldDicId,
+    	dic.`field_dic_name` AS fieldDicName 
+    	FROM 
+    	`pro_rule_field` rule  
+    	JOIN 
+    	`rule_field_dic` dic 
+    	ON 
+    	rule.`id` = dic.`field_id` 
+    	WHERE 
+    	rule.`company_id` = #{companyId}
+    </select>
+    
+    <select id="getRuleByPage" resultType ="com.pro.study.dto.workflow.RuleDTO" parameterType="com.pro.study.vo.request.product.ProductRequestVO">
+    	SELECT id , 
+    	`rule_describe` AS ruleDescribe,
+    	`create_time` AS createTime, 
+    	`rule_name` AS ruleName 
+    	FROM 
+    	`pro_rule` 
+    	WHERE  
+    	company_id =#{companyId} 
+    	LIMIT #{page.limitStart},#{page.limitEnd}
+    </select>
+    
+    <select id="countAllRule"  resultType = "java.lang.Integer">
+    	SELECT count(id) 
+    	FROM 
+    	`pro_rule` 
+    	WHERE  
+    	company_id =#{companyId} 
+    </select>
+    
+    <update id="updateRuleInfo" parameterType="com.pro.study.dto.workflow.RuleUpdateDTO">
+    	UPDATE `pro_rule` 
+    	SET 
+    	`rule_body` = #{rule.body},
+    	`rule_describe` = #{rule.describe},
+    	`rule_name` = #{rule.ruleName} 
+    	WHERE 
+    	`company_id` = #{rule.companyId} 
+    	AND 
+    	`id` = #{rule.id}
+    </update>
+    
+    <update id="deleteRule">
+    	UPDATE `pro_rule` 
+    	SET 
+    	`delete_flag` = 1 
+    	WHERE 
+    	`id` = #{id}
+    </update>
 </mapper>

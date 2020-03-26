@@ -1,6 +1,7 @@
 package com.pro.study.serviceimpl.user;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,8 @@ import com.lambdaworks.crypto.SCryptUtil;
 import com.pro.study.dao.role.ProRoleRepository;
 import com.pro.study.dao.user.UserMybatisDao;
 import com.pro.study.dao.user.UserRepository;
+import com.pro.study.dto.sys.LimitDto;
+import com.pro.study.dto.user.CheckUserDTO;
 import com.pro.study.dto.user.UserBaseInfoDTO;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.SysDicEnum;
@@ -30,11 +33,15 @@ import com.pro.study.utils.JWTUtil;
 import com.pro.study.utils.OSSClientUtil;
 import com.pro.study.utils.ResponseUtils;
 import com.pro.study.utils.UserUtils;
+import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.user.CheckUserReuqestDTO;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserBaseInfoRequestVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.Page;
 import com.pro.study.vo.response.sys.SysResponseVO;
+import com.pro.study.vo.response.user.CheckUserListReponseVO;
 import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
@@ -223,5 +230,98 @@ public class UserServiceImpl implements UserService {
 			return new ImageReponseVO(SysDicEnum.ERROR.getCode(),"图片上传失败");
 		}
 	}
-
+	
+	/**
+	 * 获取审核员列表
+	 */
+	@Override
+	public Page<CheckUserListReponseVO> getCheckUserList(UserInfoDTO user, PageInfo page) {
+		try {
+		LimitDto limit = Page.getLimit(page.getPageNum(), page.getPageSize());
+		Long companyId = user.getCompanyId();
+		//获取审核员角色对应的Id
+		Long roleId = userDao.findAuthIdByName(SysRoleEnum.CHECK.getRole());
+		List<CheckUserListReponseVO> checkUserList = userDao.getCheckUserList(limit,companyId,roleId);
+		//查询总条数
+		Integer total = userDao.selectUserTotalByRoleId(roleId);
+		Integer totalPageNo = Page.getTotalPageNo(total,page.getPageSize());
+		
+		return new Page<CheckUserListReponseVO>(SysDicEnum.SUCCESS.getCode(),"审核员列表获取成功",page.getPageNum(),page.getPageSize(),total,totalPageNo,checkUserList);
+		}catch (Exception e) {
+			return Page.fail();
+		}
+	}
+	
+	/**
+	 * 创建贷款审核人
+	 */
+	@Override
+	public SysResponseVO createCheckUser(UserInfoDTO userInfoDTO,CreateUserInfoVO userVO) {
+		User user = new User();
+		/**
+		 * 先校验用户名是否存在
+		 */
+		User userByUserName = userRepository.findByUsername(userVO.getUsername());
+		if(userByUserName!=null) {
+			//证明已经存在的用户
+			return ResponseUtils.createResponse(SysDicEnum.HAS_USER);
+		}
+		BeanUtils.copyProperties(userVO, user);
+		//数据库保存加密后的密码
+		//查询数据库获取申贷人角色id
+		ProRole loanApply = roleMapper.findByRoleName(SysRoleEnum.CHECK.getRole());
+		user.setPassword(SCryptUtil.scrypt(user.getPassword(), 32768, 8, 1));
+		user.setRoleId(loanApply.getId());
+		user.setCompanyId(userInfoDTO.getCompanyId());
+		try {
+			userRepository.save(user);
+		}catch (Exception e) {
+			//保存的时候发生错误
+			//返回系统异常
+			return ResponseUtils.returnSysError();
+		}
+		return ResponseUtils.returnSuccess();
+	}
+	
+	/**
+	 * 根据用户id获取用户详细信息
+	 */
+	@Override
+	public UserBaseBaseInfoReponseVO getBaseUserInfo(Long userId) {
+		try {
+			//获取用户基本信息
+			UserBaseInfoDTO userBaseInfo = userDao.findUser(userId,SysDicEnum.SYS_VALID.getCode());
+			UserBaseBaseInfoReponseVO result = new UserBaseBaseInfoReponseVO(SysDicEnum.SUCCESS.getCode(),"数据获取成功");
+			result.setUserId(userBaseInfo.getId());
+			result.setEmail(userBaseInfo.getEmail());
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String url = ossClientUtil.getHeadImageUrl(userBaseInfo.getHead_image());
+			result.setHeadImage(url);
+			result.setIdCard(ETLUtil.etlIdCard(userBaseInfo.getId_card()));
+			result.setName(userBaseInfo.getName());
+			result.setPhoneNumber(ETLUtil.etlPhoneNumber(userBaseInfo.getPhone_number()));
+			return result; 
+		}catch (Exception e) {
+			return new UserBaseBaseInfoReponseVO(SysDicEnum.ERROR.getCode(),"用户信息获取失败");
+		}
+	}
+	
+	/**
+	 * 修改审核人信息
+	 */
+	@Override
+	public SysResponseVO updateCheckUserInfo(CheckUserReuqestDTO checkUserInfo) {
+		try {
+			CheckUserDTO checkUserDTO = new CheckUserDTO();
+			BeanUtils.copyProperties(checkUserInfo, checkUserDTO);
+			checkUserDTO.setPassWord(SCryptUtil.scrypt(checkUserInfo.getPassWord(), 32768, 8, 1));
+			userDao.updateCheckUserInfo(checkUserDTO);
+			return ResponseUtils.returnSuccess();
+		}catch (Exception e) {
+			//修改数据的时候发生错误
+			e.printStackTrace();
+			//返回系统异常
+			return ResponseUtils.returnSysError();
+		}
+	}
 }

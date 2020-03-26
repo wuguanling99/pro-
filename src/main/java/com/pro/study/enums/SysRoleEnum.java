@@ -13,7 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SysRoleEnum {
 	IT_ADMIN("admin","管理员"),
-	CHECK("sheck","审核员"),
+	CHECK("check","审核员"),
 	LOAN_APPLY("loan_apply","贷款申请人"),
 	COMPANY_MANAGER("company_manager","公司管理员"),
 	PASSROLE("pass","不校验权限直接通过"),

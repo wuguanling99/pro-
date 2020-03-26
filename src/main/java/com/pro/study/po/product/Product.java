@@ -54,4 +54,10 @@ public class Product extends BasePojo{
 	@Column(name = "product_quota",columnDefinition="int(20) COMMENT '放款额度'")
 	private Integer quota;
 	
+	/**
+	 * 产品logo
+	 */
+	@Column(name = "product_logo",columnDefinition="varchar(255) COMMENT '产品logo'")
+	private String logo;
+	
 }

@@ -12,14 +12,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.enums.SysDicEnum;
 import com.pro.study.service.user.UserService;
 import com.pro.study.utils.UserUtils;
+import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.user.CheckUserReuqestDTO;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserBaseInfoRequestVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.Page;
 import com.pro.study.vo.response.sys.SysResponseVO;
+import com.pro.study.vo.response.user.CheckUserListReponseVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
 import com.pro.study.vo.response.user.UserBaseBaseInfoReponseVO;
@@ -102,5 +107,46 @@ public class UserController{
 	@PostMapping("/uploadUserHeadImage")
 	public ImageReponseVO uploadUserHeadImage(HttpServletRequest request,@RequestParam(value = "file") MultipartFile file) {
 		return userService.uploadUserHeadImage(UserUtils.getUser(request),file);
+	}
+	
+	/**
+	 * 
+	* @Description:（获取所有审核员列表） 
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getCheckUserList")
+	public Page<CheckUserListReponseVO> getCheckUserList(HttpServletRequest request,@RequestBody PageInfo page) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return userService.getCheckUserList(user,page);
+	}
+	
+	/**
+	 * 
+	* @Description:（创建贷款申请人） 
+	* 方法返回值: @return
+	 */
+	@PostMapping("/createCheckUser")
+	public SysResponseVO createCheckUser(HttpServletRequest request,@Validated @RequestBody CreateUserInfoVO userInfo) {
+		return userService.createCheckUser(UserUtils.getUser(request),userInfo);
+	}
+	
+	/**
+	 * 
+	* @Description:（创建贷款申请人） 
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getCheckUserInfo")
+	public UserBaseBaseInfoReponseVO getCheckUserInfo(@RequestParam("userId")Long userId) {
+		return userService.getBaseUserInfo(userId);
+	}
+	
+	/**
+	 * 
+	* @Description:（更新贷款申请人） 
+	* 方法返回值: @return
+	 */
+	@GetMapping("/updateCheckUserInfo")
+	public SysResponseVO updateCheckUserInfo(@RequestBody CheckUserReuqestDTO checkUserInfo) {
+		return userService.updateCheckUserInfo(checkUserInfo);
 	}
 }

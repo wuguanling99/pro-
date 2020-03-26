@@ -31,11 +31,11 @@
 	        id = #{item.id}
 	    </foreach> 
 	</update>
-	<insert id="insertRuleField" parameterType="com.pro.study.dto.workflow.RuleFieldDTO">
+	<insert id="insertRuleField" parameterType="com.pro.study.dto.workflow.RuleFieldDTO" keyProperty="ruleField.id" useGeneratedKeys="true">
 		INSERT INTO `pro_rule_field` 
 		(`company_id`,`field_name`,`json_path`) 
 		VALUES 
-		(${ruleField.companyId},${ruleField.fieldName},${ruleField.jsonPath})
+		(#{ruleField.companyId},#{ruleField.fieldName},#{ruleField.jsonPath})
 	</insert>
 	
 	<insert id="insertRuleFieldDicList" parameterType="java.util.List">

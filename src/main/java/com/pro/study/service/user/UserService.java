@@ -7,11 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pro.study.dto.user.UserInfoDTO;
+import com.pro.study.vo.request.sys.PageInfo;
+import com.pro.study.vo.request.user.CheckUserReuqestDTO;
 import com.pro.study.vo.request.user.CreateUserInfoVO;
 import com.pro.study.vo.request.user.UserBaseInfoRequestVO;
 import com.pro.study.vo.request.user.UserLoginVO;
 import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.sys.SysListResponseVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
+import com.pro.study.vo.response.user.CheckUserListReponseVO;
 import com.pro.study.vo.response.user.LoanApplyTableUserBaseInfoVO;
 import com.pro.study.vo.response.user.LoginResponseVO;
 import com.pro.study.vo.response.user.LogoutResponseVO;
@@ -83,5 +88,39 @@ public interface UserService {
 	* 方法返回值: @return
 	 */
 	ImageReponseVO uploadUserHeadImage(UserInfoDTO userInfoDTO, MultipartFile file);
+	
+	/**
+	 * 
+	* @Description:（分页显示审核员） 
+	* 方法返回值: @param user
+	* 方法返回值: @param page
+	* 方法返回值: @return
+	 */
+	Page<CheckUserListReponseVO> getCheckUserList(UserInfoDTO user, PageInfo page);
+	
+	/**
+	 * 
+	 * @Description:（创建贷款审核人） 
+	* 方法返回值: @param userInfoDTO 
+	* 方法返回值: @param userInfo
+	* 方法返回值: @return
+	 */
+	SysResponseVO createCheckUser(UserInfoDTO userInfoDTO, CreateUserInfoVO userInfo);
+	
+	/**
+	 * 
+	* @Description:（根据用户id获取用户详细信息） 
+	* 方法返回值: @param userId
+	* 方法返回值: @return
+	 */
+	UserBaseBaseInfoReponseVO getBaseUserInfo(Long userId);
+	
+	/**
+	 * 
+	* @Description:（修改审核人员数据） 
+	* 方法返回值: @param checkUserInfo
+	* 方法返回值: @return
+	 */
+	SysResponseVO updateCheckUserInfo(CheckUserReuqestDTO checkUserInfo);
 
 }

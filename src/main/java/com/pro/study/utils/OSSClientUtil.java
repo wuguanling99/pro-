@@ -66,6 +66,8 @@ public class OSSClientUtil {
     
     private String creditCardDownImage = "credit_card_downimage/";
 
+    private String productLogoImage = "product_logo/";
+    
     private OSS ossClient;
 
     /**
@@ -371,6 +373,39 @@ public class OSSClientUtil {
             InputStream inputStream = file.getInputStream();
             //上传文件
             String dir = faceFlag == SysDicEnum.UP_FACE.getCode()? creditCardUpImage:creditCardDownImage;
+            this.uploadImage(inputStream, name,dir);
+            return name;
+        } catch (Exception e) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+	}
+	
+	/**
+	 * 
+	* @Description:（上传公司logo到阿里云oss） 
+	* 方法返回值: @param file
+	* 方法返回值: @param string
+	* 方法返回值: @return
+	 */
+	public String uploadImgProductLogo(MultipartFile file) {
+		if (file.getSize() > MAX_SIZE) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //获取文件名
+        String originalFilename = file.getOriginalFilename();
+        //获取文件后缀名
+        String substring = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        //判断图片格式是否正确
+        if (!substring.equals(".jpg") && !substring.equals(".jpeg") && !substring.equals(".png")) {
+            throw new OSSException(SysDicEnum.OSS_UPLOAD_FAILD);
+        }
+        //设置文件名
+        String uuid = UUID.randomUUID().toString();
+        String name = uuid + substring;
+        try {
+            InputStream inputStream = file.getInputStream();
+            //上传文件
+            String dir = productLogoImage;
             this.uploadImage(inputStream, name,dir);
             return name;
         } catch (Exception e) {

@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.service.company.CompanyService;
 import com.pro.study.utils.UserUtils;
+import com.pro.study.vo.request.product.ProductRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
@@ -22,6 +25,10 @@ import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.sys.SysListResponseVO;
+import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.RuleFieldReponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
@@ -105,6 +112,63 @@ public class CompanyController{
 	public RuleFieldReponseVO createRuleField(HttpServletRequest request,@RequestBody RuleFieldRequestVO ruleField) {
 		UserInfoDTO user = UserUtils.getUser(request);
 		return companyService.createRuleField(user,ruleField);
+	}
+	
+	
+	/**
+	 * 
+	* @Description:（获取本公司产品） 
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getCompanyProductList")
+	public SysListResponseVO createRuleField(HttpServletRequest request) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.getCompanyProductList(user);
+	}
+	
+	/**
+	 * 
+	* @Description:（创建产品） 
+	* 方法返回值: @return
+	 */
+	@PostMapping("/createProduct")
+	public SysResponseVO createProduct(HttpServletRequest request,@RequestBody ProductRequestVO product) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.createProduct(user,product);
+	}
+	
+	/**
+	 * 
+	* @Description:（上传公司产品logo）  
+	* 方法返回值: @return
+	 */
+	@PostMapping("/updateProductLogo")
+	public ImageReponseVO updateProductLogo(HttpServletRequest request,@RequestParam(value = "file") MultipartFile file) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.uploadProductLogo(user,file);
+	}
+
+	/**
+	 * 
+	* @Description:（分页获取产品列表）  
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getProductByPage")
+	public Page getProductByPage(HttpServletRequest request,@RequestBody PageInfo page) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.getProductByPage(user,page);
+	}
+	
+
+	/**
+	 * 
+	* @Description:（修改产品信息）  
+	* 方法返回值: @return
+	 */
+	@PostMapping("/updateProductInfo")
+	public SysResponseVO updateProductInfo(HttpServletRequest request,@RequestBody ProductRequestVO product) {
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.updateProductInfo(user,product);
 	}
 	
 	//==================================审核员================================================

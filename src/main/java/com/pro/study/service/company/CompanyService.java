@@ -4,7 +4,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.pro.study.dto.user.UserInfoDTO;
+import com.pro.study.vo.request.product.ProductRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
@@ -13,6 +16,10 @@ import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.sys.ImageReponseVO;
+import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.sys.SysListResponseVO;
+import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.RuleFieldReponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
@@ -92,5 +99,49 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	RuleFieldReponseVO createRuleField(UserInfoDTO user, RuleFieldRequestVO ruleField);
+	
+	/**
+	 * 
+	* @Description:（获取公司列表） 
+	* 方法返回值: @param user
+	* 方法返回值: @return
+	 */
+	SysListResponseVO getCompanyProductList(UserInfoDTO user);
+	
+	/**
+	 * 
+	* @Description:（创建产品） 
+	* 方法返回值: @param user
+	* 方法返回值: @param product
+	* 方法返回值: @return
+	 */
+	SysResponseVO createProduct(UserInfoDTO user, ProductRequestVO product);
+	
+	/**
+	 * 
+	* @Description:（上传产品logo） 
+	* 方法返回值: @param user
+	* 方法返回值: @param file
+	* 方法返回值: @return
+	 */
+	ImageReponseVO uploadProductLogo(UserInfoDTO user, MultipartFile file);
+	
+	/**
+	 * 
+	 * @Description:（分页获取产品列表） 
+	* 方法返回值: @param user
+	* 方法返回值: @param page 
+	* 方法返回值: @return
+	 */
+	Page getProductByPage(UserInfoDTO user, PageInfo page);
+	
+	/**
+	 * 
+	* @Description:（修改产品信息） 
+	* 方法返回值: @param user
+	* 方法返回值: @param product
+	* 方法返回值: @return
+	 */
+	SysResponseVO updateProductInfo(UserInfoDTO user, ProductRequestVO product);
 
 }

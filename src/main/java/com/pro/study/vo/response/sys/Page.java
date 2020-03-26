@@ -3,6 +3,8 @@ package com.pro.study.vo.response.sys;
 import java.util.List;
 
 import com.pro.study.dto.sys.LimitDto;
+import com.pro.study.enums.SysDicEnum;
+import com.pro.study.vo.response.user.CheckUserListReponseVO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,12 +14,35 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Page<T> {
+	/**
+	 * 返回码
+	 */
+	private Integer code;
 	
-	private int pageNo;//页码
-	private int pageSize;//每页显示记录数
-	private int totalRecordNo;//总共的记录数
-	private int totalPageNo;//总共页数
-	private List<T> list;//每页显示的数据
+	/**
+	 * 返回消息
+	 */
+	private String message;
+	/**
+	 * 页码
+	 */
+	private int pageNo;
+	/**
+	 * 每页显示条数
+	 */
+	private int pageSize;
+	/**
+	 * 总条数
+	 */
+	private int totalRecordNo;
+	/**
+	 * 总页数
+	 */
+	private int totalPageNo;
+	/**
+	 * 页面数据
+	 */
+	private List<T> list;
 	
 		
 	/**
@@ -48,5 +73,14 @@ public class Page<T> {
 		}else {
 			return (total/pageSize)+1;
 		}
+	}
+	/*
+	 * 分页数据获取失败返回类
+	 */
+	public static Page<CheckUserListReponseVO> fail() {
+		Page page = new Page();
+		page.setCode(SysDicEnum.ERROR.getCode());
+		page.setMessage("分页数据获取失败");
+		return page;
 	}
 }

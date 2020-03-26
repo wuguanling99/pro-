@@ -19,4 +19,29 @@
 		 WHERE 
 		 id = ${user.userId}
 	</update>
+	
+	<select id="getCheckUserList" parameterType="com.pro.study.dto.sys.LimitDto"  resultType="com.pro.study.vo.response.user.CheckUserListReponseVO">
+		SELECT	id,`email`,`phone_number` AS phoneNumber,`name`,`username` FROM `pro_user` WHERE `company_id` = #{companyId} AND delete_flag = 0 AND role_id = #{roleId}
+		LIMIT ${page.limitStart},  ${page.limitEnd}
+	</select>
+	
+	<select id="findAuthIdByName" resultType="java.lang.Long">
+		SELECT id FROM `pro_role` WHERE role_name = #{roleName} AND delete_flag = 0
+	</select>
+	
+	<select id = "selectUserTotalByRoleId" resultType="java.lang.Integer">
+		SELECT COUNT(id) FROM `pro_user` WHERE `role_id` = #{roleId} AND `delete_flag` = 0
+	</select>
+	
+	<update id="updateCheckUserInfo" parameterType="com.pro.study.dto.user.CheckUserDTO">
+		UPDATE `pro_user` SET 
+		`email`=#{checkUser.email},
+		`id_card`=#{checkUser.idCard},
+		`name`=#{checkUser.name},
+		`password`=#{checkUser.passWord},
+		`phone_number`=#{checkUser.phoneNumber},
+		 `username`=#{checkUser.userName}
+		 WHERE 
+		 id = #{checkUser.id}
+	</update>
 </mapper>

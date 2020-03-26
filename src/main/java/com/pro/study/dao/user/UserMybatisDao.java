@@ -1,11 +1,16 @@
 package com.pro.study.dao.user;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import com.pro.study.dto.sys.LimitDto;
+import com.pro.study.dto.user.CheckUserDTO;
 import com.pro.study.dto.user.UserBaseInfoDTO;
 import com.pro.study.po.role.ProAuth;
 import com.pro.study.vo.request.user.UserBaseInfoRequestVO;
+import com.pro.study.vo.response.user.CheckUserListReponseVO;
 
 /**
  * 
@@ -40,5 +45,39 @@ public interface UserMybatisDao {
 	* 方法返回值: @param userId
 	 */
 	void updateUserInfo(@Param("user")UserBaseInfoRequestVO userBaseInfo);
+	
+	/**
+	 * 
+	* @param roleId 
+	 * @Description:（分页获取审核员） 
+	* 方法返回值: @param pageNum
+	* 方法返回值: @param pageSize
+	* 方法返回值: @param companyId
+	* 方法返回值: @return
+	 */
+	List<CheckUserListReponseVO> getCheckUserList(@Param("page")LimitDto limit,@Param("companyId") Long companyId,@Param("roleId") Long roleId);
+	
+	/**
+	 * 
+	* @Description:（根据角色名查询角色id） 
+	* 方法返回值: @param role
+	* 方法返回值: @return
+	 */
+	Long findAuthIdByName(@Param("roleName")String role);
+	
+	/**
+	 * 
+	* @Description:（获取该角色下所有用户数） 
+	* 方法返回值: @param roleId
+	* 方法返回值: @return
+	 */
+	Integer selectUserTotalByRoleId(@Param("roleId")Long roleId);
+	
+	/**
+	 * 
+	* @Description:（修改审核人信息） 
+	* 方法返回值: @param checkUserDTO
+	 */
+	void updateCheckUserInfo(@Param("checkUser")CheckUserDTO checkUserDTO);
 
 }

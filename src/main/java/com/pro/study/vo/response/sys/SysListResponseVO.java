@@ -1,5 +1,6 @@
 package com.pro.study.vo.response.sys;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data	
-public class SysListResponseVO<T> {
+public class SysListResponseVO<T> implements Serializable {
 	/**
 	 * 返回码
 	 */

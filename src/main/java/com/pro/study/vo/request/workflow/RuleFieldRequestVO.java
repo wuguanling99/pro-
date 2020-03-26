@@ -27,5 +27,8 @@ public class RuleFieldRequestVO {
 	 */
 	private String jsonPath;
 	
+	/**
+	 * 规则字段字典数组
+	 */
 	private List<RuleFieldDicVO> rueFieldList;
 }

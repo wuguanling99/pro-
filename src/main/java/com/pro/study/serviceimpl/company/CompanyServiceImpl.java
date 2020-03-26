@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pro.study.dao.company.CompanyMybaitsDao;
 import com.pro.study.dao.company.CompanyProductLinkRepository;
@@ -26,6 +27,7 @@ import com.pro.study.dao.workflow.WorkflowRepository;
 import com.pro.study.dto.company.CompanyDto;
 import com.pro.study.dto.company.CompanyLoanerLocationDto;
 import com.pro.study.dto.company.LocationMapDto;
+import com.pro.study.dto.company.ProductDetailDTO;
 import com.pro.study.dto.company.ProductDto;
 import com.pro.study.dto.sys.LimitDto;
 import com.pro.study.dto.user.UserInfoDTO;
@@ -40,7 +42,9 @@ import com.pro.study.po.company.Company;
 import com.pro.study.po.company.CompanyProductLink;
 import com.pro.study.po.product.Product;
 import com.pro.study.service.company.CompanyService;
+import com.pro.study.utils.OSSClientUtil;
 import com.pro.study.utils.UserUtils;
+import com.pro.study.vo.request.product.ProductRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.RuleFieldDicVO;
@@ -50,7 +54,10 @@ import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
 import com.pro.study.vo.response.company.LoanerLocationMapResponseVO;
 import com.pro.study.vo.response.product.ProductResponseVO;
+import com.pro.study.vo.response.sys.ImageReponseVO;
 import com.pro.study.vo.response.sys.Page;
+import com.pro.study.vo.response.sys.SysListResponseVO;
+import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.RuleFieldReponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
@@ -315,7 +322,89 @@ public class CompanyServiceImpl implements CompanyService{
 			result.setFieldName(ruleFieldDTO.getFieldName());
 			return result;
 		}catch (Exception e) {
+			e.printStackTrace();
 			return new RuleFieldReponseVO(SysDicEnum.ERROR.getCode(),"数据添加失败");
+		}
+	}
+	
+	/**
+	 * 获取公司列表
+	 */
+	@Override
+	public SysListResponseVO getCompanyProductList(UserInfoDTO user) {
+		try {
+		List<ProductDto> productList = companyDao.getProductByCompanyId(user.getCompanyId());
+		return new SysListResponseVO<ProductDto>(SysDicEnum.SUCCESS.getCode(),"产品列表获取成功",productList);
+		}catch (Exception e) {
+			return new SysListResponseVO<ProductDto>(SysDicEnum.ERROR.getCode(),"产品列表获取失败",null);
+		}
+	}
+	
+	/**
+	 * 创建产品
+	 */
+	@Override
+	public SysResponseVO createProduct(UserInfoDTO user, ProductRequestVO product) {
+		try{
+			Product entity = new Product();
+			entity.setCompanyId(user.getCompanyId());
+			entity.setProductDescribe(product.getProductDescribe());
+			entity.setProductName(product.getProductName());
+			entity.setLogo(product.getLogoKey());
+			Product data = productRepository.save(entity);
+			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"产品创建成功");
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new SysResponseVO(SysDicEnum.ERROR.getCode(),"产品创建失败");
+		}
+	}
+	
+	/**
+	 * 更新产品logo
+	 */
+	@Override
+	public ImageReponseVO uploadProductLogo(UserInfoDTO user, MultipartFile file) {
+		try {
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			String key = ossClientUtil.uploadImgProductLogo(file);
+			String url = ossClientUtil.getHeadImageUrl(key);
+			return new ImageReponseVO(SysDicEnum.SUCCESS.getCode(),"图片上传成功",url,key);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ImageReponseVO(SysDicEnum.ERROR.getCode(),"logo上传失败");
+		}
+	}
+	
+	/**
+	 * 分页获取产品列表
+	 */
+	@Override
+	public Page getProductByPage(UserInfoDTO user,PageInfo page) {
+		try {
+			LimitDto limit = Page.getLimit(page.getPageNum(),page.getPageSize());
+			List<ProductDetailDTO> data = companyDao.getProductDetailByPage(user.getCompanyId(),limit);
+			OSSClientUtil ossClientUtil = new OSSClientUtil();
+			for (ProductDetailDTO index : data) {
+				index.setLogoUrl(ossClientUtil.getHeadImageUrl(index.getLogoKey()));
+			}
+			Integer total = companyDao.getAllProductSize(user.getCompanyId());
+			Integer totalPageNo = Page.getTotalPageNo(total,page.getPageSize());
+			return new Page<ProductDetailDTO>(SysDicEnum.SUCCESS.getCode(),"产品列表获取成功",page.getPageNum(),page.getPageSize(),total,totalPageNo,data);
+		}catch (Exception e) {
+			return Page.fail();
+		}
+	}
+	
+	/**
+	 * 修改产品信息
+	 */
+	@Override
+	public SysResponseVO updateProductInfo(UserInfoDTO user, ProductRequestVO product) {
+		try {
+			companyDao.updateProductInfo(product,user.getCompanyId());
+			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"产品修改成功");
+		}catch (Exception e) {
+			return new SysResponseVO(SysDicEnum.ERROR.getCode(),"产品修改失败");
 		}
 	}
 }

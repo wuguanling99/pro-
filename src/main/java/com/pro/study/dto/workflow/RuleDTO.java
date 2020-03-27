@@ -24,6 +24,16 @@ public class RuleDTO {
 	private Long id;
 	
 	/**
+	 * 产品id
+	 */
+	private Long productId;
+	
+	/**
+	 * 产品名
+	 */
+	private String productName;
+	
+	/**
 	 * 规则名
 	 */
 	private String ruleName;

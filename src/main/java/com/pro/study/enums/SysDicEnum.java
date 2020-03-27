@@ -16,6 +16,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SysDicEnum {
+	//======规则======
+	RULE_LINK(1,"关联"),
+	RULE_DONT_LINK(0,"未关联"),
 	//======照片正反面========
 	UP_FACE(0,"正面"),
 	DOWN_FACE(1,"反面"),

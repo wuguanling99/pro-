@@ -9,25 +9,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pro.study.dao.company.CompanyMybaitsDao;
+import com.pro.study.dao.product.ProductRepository;
 import com.pro.study.dao.workflow.RuleRepository;
 import com.pro.study.dto.sys.LimitDto;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.dto.workflow.RuleDTO;
 import com.pro.study.dto.workflow.RuleFieldAndDicDTO;
+import com.pro.study.dto.workflow.RuleLinkDTO;
 import com.pro.study.dto.workflow.RuleUpdateDTO;
 import com.pro.study.enums.SysDicEnum;
+import com.pro.study.po.product.Product;
 import com.pro.study.po.workflow.Rule;
 import com.pro.study.service.rule.RuleService;
 import com.pro.study.utils.JsonUtil;
 import com.pro.study.vo.request.sys.PageInfo;
-import com.pro.study.vo.request.workflow.BodyRequestVO;
 import com.pro.study.vo.request.workflow.RuleAndBodyRequestVO;
+import com.pro.study.vo.request.workflow.RulePage;
 import com.pro.study.vo.response.company.RuleDicReponseVO;
 import com.pro.study.vo.response.company.RuleFieldAndDicReponseVO;
 import com.pro.study.vo.response.sys.Page;
 import com.pro.study.vo.response.sys.SysListResponseVO;
 import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.workflow.RuleInfoResponseVO;
+import com.pro.study.vo.response.workflow.RuleLinkResponseVO;
 
 /** 
 * @author: wgl
@@ -44,13 +48,16 @@ public class RuleServiceImpl implements RuleService {
 	@Autowired
 	private RuleRepository ruleRepository;
 	
+	@Autowired
+	private ProductRepository productRepository;
+	
 	/**
 	 * 获取规则字段和规则字典
 	 */
 	@Override
-	public SysListResponseVO<RuleFieldAndDicReponseVO> getAllRuleField(UserInfoDTO user) {
+	public SysListResponseVO<RuleFieldAndDicReponseVO> getAllRuleField(UserInfoDTO user,Long productId) {
 		try {
-			List<RuleFieldAndDicDTO> ruleFieldDTO =  companyDao.getRuleField(user.getCompanyId());
+			List<RuleFieldAndDicDTO> ruleFieldDTO =  companyDao.getRuleField(user.getCompanyId(),productId);
 			Set<Long> collect = ruleFieldDTO.stream().map(RuleFieldAndDicDTO :: getFieldId).collect(Collectors.toSet());
 			List<RuleFieldAndDicReponseVO> data = new ArrayList<RuleFieldAndDicReponseVO>();
 			for(Long index : collect) {
@@ -88,6 +95,7 @@ public class RuleServiceImpl implements RuleService {
 			rule.setRuleName(ruleVO.getRuleName());
 			rule.setRuleBody(JsonUtil.objectToJson(ruleVO.getRuleBody()));
 			rule.setCompanyId(user.getCompanyId());
+			rule.setProductId(ruleVO.getProductId());
 			ruleRepository.save(rule);
 			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"规则添加成功");
 		}catch (Exception e) {
@@ -125,6 +133,9 @@ public class RuleServiceImpl implements RuleService {
 			result.setRuleBody(JsonUtil.jsonToPojo(data.getRuleBody(),List.class));
 			result.setRuleDescribe(data.getRuleDescribe());
 			result.setRuleName(data.getRuleName());
+			result.setProductId(data.getProductId());
+			Product product = productRepository.findByIdAndDeleteFlag(data.getProductId(),SysDicEnum.SYS_VALID.getCode());
+			result.setProductName(product.getProductName());
 			return result;
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -145,6 +156,7 @@ public class RuleServiceImpl implements RuleService {
 			ruleDTO.setCompanyId(user.getCompanyId());
 			ruleDTO.setRuleName(rule.getRuleName());
 			ruleDTO.setDescribe(rule.getRuleDescribe());
+			ruleDTO.setProductId(rule.getProductId());
 			companyDao.updateRuleInfo(ruleDTO);
 			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"规则修改成功");
 		}catch (Exception e) {
@@ -165,4 +177,30 @@ public class RuleServiceImpl implements RuleService {
 		}
 	}
 
+	
+	/**
+	 * 获取规则关联信息
+	 */
+	@Override
+	public Page getRuleByLinkPage(UserInfoDTO user,RulePage page) {
+		try {
+			LimitDto limit = Page.getLimit(page.getPageNum(),page.getPageSize());
+			List<RuleLinkResponseVO> data = new ArrayList<RuleLinkResponseVO>();
+			List<RuleLinkDTO> ruleList = companyDao.getAllRuleLinkInfo(page.getProductId(),page.getWorkflowId(),limit.getLimitStart(),limit.getLimitEnd());
+			for (RuleLinkDTO ruleDTO : ruleList) {
+				RuleLinkResponseVO index = new RuleLinkResponseVO();
+				index.setLinkType(ruleDTO.getWorkFlowId() == null ? SysDicEnum.RULE_DONT_LINK.getCode():SysDicEnum.RULE_LINK.getCode());
+				index.setRuleName(index.getRuleName());
+				index.setRuleId(index.getRuleId());
+				index.setRuleDescribe(index.getRuleDescribe());
+				data.add(index);
+			}
+			Integer count = companyDao.countRuleByProductIdAndWorkFlowId(page.getProductId(),page.getWorkflowId());
+			Integer totalPageNo = Page.getTotalPageNo(count, page.getPageSize());
+			return 	new Page(SysDicEnum.SUCCESS.getCode(),"数据获取成功",page.getPageNum(),page.getPageSize(),count,totalPageNo,data);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return Page.fail();
+		}
+	}
 }

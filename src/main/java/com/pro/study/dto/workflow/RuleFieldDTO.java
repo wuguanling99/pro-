@@ -17,6 +17,11 @@ import lombok.NoArgsConstructor;
 public class RuleFieldDTO {
 	
 	/**
+	 * 产品id
+	 */
+	private Long productId;
+	
+	/**
 	 * 字段id
 	 */
 	private Long id;

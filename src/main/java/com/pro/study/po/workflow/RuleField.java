@@ -29,6 +29,12 @@ public class RuleField extends BasePojo{
 	/**
 	 * 公司id
 	 */
+	@Column(name = "product_id",nullable=false,columnDefinition="bigint(255) default 0 COMMENT '产品id'")
+	private Long productId;
+	
+	/**
+	 * 公司id
+	 */
 	@Column(name = "company_id",nullable=false,columnDefinition="bigint(255) default 0 COMMENT '公司id'")
 	private Long companyId;
 	

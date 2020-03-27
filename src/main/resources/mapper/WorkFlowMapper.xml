@@ -33,9 +33,9 @@
 	</update>
 	<insert id="insertRuleField" parameterType="com.pro.study.dto.workflow.RuleFieldDTO" keyProperty="ruleField.id" useGeneratedKeys="true">
 		INSERT INTO `pro_rule_field` 
-		(`company_id`,`field_name`,`json_path`) 
+		(`company_id`,`field_name`,`json_path`,`product_id`) 
 		VALUES 
-		(#{ruleField.companyId},#{ruleField.fieldName},#{ruleField.jsonPath})
+		(#{ruleField.companyId},#{ruleField.fieldName},#{ruleField.jsonPath},#{ruleField.productId})
 	</insert>
 	
 	<insert id="insertRuleFieldDicList" parameterType="java.util.List">

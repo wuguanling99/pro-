@@ -68,18 +68,25 @@
     	rule.`id` = dic.`field_id` 
     	WHERE 
     	rule.`company_id` = #{companyId}
+    	AND 
+    	rule.`product_id`=#{productId}
     </select>
     
     <select id="getRuleByPage" resultType ="com.pro.study.dto.workflow.RuleDTO" parameterType="com.pro.study.vo.request.product.ProductRequestVO">
-    	SELECT id , 
-    	`rule_describe` AS ruleDescribe,
-    	`create_time` AS createTime, 
-    	`rule_name` AS ruleName 
-    	FROM 
-    	`pro_rule` 
+    	SELECT 
+	    	product.id AS productId,
+			product.`product_name` AS productName,
+			rule.id , 
+	    	rule.`rule_describe` AS ruleDescribe,
+	    	rule.`create_time` AS createTime, 
+	    	rule.`rule_name` AS ruleName 
+	    	FROM 
+	    	`pro_rule` AS rule
+	    	LEFT JOIN `product` AS product 
+	    	ON rule.product_id = product.id
     	WHERE  
-    	company_id =#{companyId} 
-    	LIMIT #{page.limitStart},#{page.limitEnd}
+    		company_id =#{companyId} 
+    		LIMIT #{page.limitStart},#{page.limitEnd}
     </select>
     
     <select id="countAllRule"  resultType = "java.lang.Integer">
@@ -93,6 +100,7 @@
     <update id="updateRuleInfo" parameterType="com.pro.study.dto.workflow.RuleUpdateDTO">
     	UPDATE `pro_rule` 
     	SET 
+    	`product_id` = #{rule.productId},
     	`rule_body` = #{rule.body},
     	`rule_describe` = #{rule.describe},
     	`rule_name` = #{rule.ruleName} 
@@ -109,4 +117,39 @@
     	WHERE 
     	`id` = #{id}
     </update>
+    
+    <select id ="findWorkFlowByProductId" resultType="com.pro.study.dto.workflow.WorkFlowDTO">
+    	SELECT id,`workflow_name` AS workflowName FROM `pro_workflow` WHERE product_id = 1
+    </select>
+    
+    <select id="findNodeListByWorkFlowId" resultType="com.pro.study.dto.workflow.NodeDTO">
+    	SELECT id,`step_name` AS `name` FROM `step_node` WHERE `workflow_id` = #{workFlowId}
+    </select>
+    
+    <select id="getAllRuleLinkInfo" resultType="com.pro.study.dto.workflow.RuleLinkDTO">
+		SELECT 
+		`id`,
+		`rule_name` AS ruleName,
+		`rule_describe` AS ruleDescribe,
+		`workflow_id` AS  workFlowId
+		FROM 
+		`pro_rule` 
+		WHERE 
+		workflow_id =#{workFlowId} 
+		OR 
+		product_id = #{productId}   
+		limit
+		#{limitStart},#{limitEnd}
+    </select>
+    
+    <select id="countRuleByProductIdAndWorkFlowId" resultType="java.lang.Integer">
+    	SELECT 
+		count(id)
+		FROM 
+		`pro_rule` 
+		WHERE 
+		workflow_id =#{workFlowId} 
+		OR 
+		product_id = #{productId} 
+    </select>
 </mapper>

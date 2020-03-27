@@ -171,6 +171,30 @@ public class CompanyController{
 		return companyService.updateProductInfo(user,product);
 	}
 	
+	
+	/**
+	 * 
+	* @Description:（根据产品获取对应的工作流节点） 
+	* 方法返回值: @param request
+	* 方法返回值: @param productId
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getWorkFlowNodeByProductId")
+	public SysListResponseVO getWorkFlowNodeByProductId(HttpServletRequest request,@RequestParam("productId")Long productId){
+		return companyService.getWorkFlowNodeByProductId(UserUtils.getUser(request),productId);
+	}
+	
+	/**
+	 * 
+	* @Description:（根据产品获取对应的工作流节点） 
+	* 方法返回值: @param request
+	* 方法返回值: @param productId
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getAllOutInterface")
+	public Page getAllOutInterface(HttpServletRequest request,@RequestParam("productId")Long productId){
+		return companyService.getAllOutInterface(UserUtils.getUser(request),productId);
+	}
 	//==================================审核员================================================
 	/**
 	 * 

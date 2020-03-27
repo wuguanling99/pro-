@@ -18,7 +18,17 @@ import lombok.NoArgsConstructor;
  */
 @Data
 public class RuleInfoResponseVO extends SysResponseVO{
-
+	
+	/**
+	 * 产品ID
+	 */
+	private Long productId;
+	
+	/**
+	 * 产品名
+	 */
+	private String productName;
+	
 	/**
 	 * 规则id
 	 */
@@ -39,9 +49,11 @@ public class RuleInfoResponseVO extends SysResponseVO{
 	 */
 	private List<BodyRequestVO> ruleBody;
 
-	public RuleInfoResponseVO(Integer code, String message, Long id, String ruleName, String ruleDescribe,
-			List<BodyRequestVO> ruleBody) {
+	public RuleInfoResponseVO(Integer code, String message, Long productId, String productName, Long id,
+			String ruleName, String ruleDescribe, List<BodyRequestVO> ruleBody) {
 		super(code, message);
+		this.productId = productId;
+		this.productName = productName;
 		this.id = id;
 		this.ruleName = ruleName;
 		this.ruleDescribe = ruleDescribe;
@@ -55,8 +67,8 @@ public class RuleInfoResponseVO extends SysResponseVO{
 
 	@Override
 	public String toString() {
-		return "RuleInfoResponseVO [id=" + id + ", ruleName=" + ruleName + ", ruleDescribe=" + ruleDescribe
-				+ ", ruleBody=" + ruleBody + "]";
+		return "RuleInfoResponseVO [productId=" + productId + ", productName=" + productName + ", id=" + id
+				+ ", ruleName=" + ruleName + ", ruleDescribe=" + ruleDescribe + ", ruleBody=" + ruleBody + "]";
 	}
 
 }

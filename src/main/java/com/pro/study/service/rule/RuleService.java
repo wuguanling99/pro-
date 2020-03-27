@@ -3,6 +3,7 @@ package com.pro.study.service.rule;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.RuleAndBodyRequestVO;
+import com.pro.study.vo.request.workflow.RulePage;
 import com.pro.study.vo.response.company.RuleFieldAndDicReponseVO;
 import com.pro.study.vo.response.sys.Page;
 import com.pro.study.vo.response.sys.SysListResponseVO;
@@ -13,12 +14,13 @@ public interface RuleService {
 	
 	/**
 	 * 
-	* @Description:（获取产品下的规则字段） 
+	* @param productId 
+	 * @Description:（获取产品下的规则字段） 
 	* 方法返回值: @param user
 	* 方法返回值: @param productId
 	* 方法返回值: @return
 	 */
-	SysListResponseVO<RuleFieldAndDicReponseVO> getAllRuleField(UserInfoDTO user);
+	SysListResponseVO<RuleFieldAndDicReponseVO> getAllRuleField(UserInfoDTO user, Long productId);
 	
 	/**
 	 * 
@@ -63,5 +65,14 @@ public interface RuleService {
 	* 方法返回值: @return
 	 */
 	SysResponseVO deleteRule(UserInfoDTO user, Long id);
+	
+	/**
+	 * 
+	* @Description:（获取所有关联关系的规则） 
+	* 方法返回值: @param user
+	* 方法返回值: @param id
+	* 方法返回值: @return
+	 */
+	Page getRuleByLinkPage(UserInfoDTO user, RulePage page);
 
 }

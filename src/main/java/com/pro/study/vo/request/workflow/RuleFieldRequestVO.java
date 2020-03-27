@@ -18,6 +18,11 @@ import lombok.NoArgsConstructor;
 public class RuleFieldRequestVO {
 	
 	/**
+	 * 产品id
+	 */
+	private Long productId;
+	
+	/**
 	 * 字段名
 	 */
 	private String fieldName;

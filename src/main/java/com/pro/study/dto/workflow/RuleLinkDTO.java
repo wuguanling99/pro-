@@ -7,24 +7,19 @@ import lombok.NoArgsConstructor;
 /**
  * 
 * @author: wgl
-* @date: 2020年3月27日上午3:09:18 
+* @date: 2020年3月28日上午3:24:07 
 * @version:1.0
-* @Description:规则修改数据介质
+* @Description:规则关联数据介质
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RuleUpdateDTO {
+public class RuleLinkDTO {
 	
 	/**
 	 * 规则id
 	 */
 	private Long id;
-
-	/**
-	 * 公司id
-	 */
-	private Long companyId;
 	
 	/**
 	 * 规则名
@@ -34,15 +29,10 @@ public class RuleUpdateDTO {
 	/**
 	 * 规则描述
 	 */
-	private String describe;
+	private String ruleDescribe;
 	
 	/**
-	 * 规则体
+	 * 关联的工作流id
 	 */
-	private String body;
-	
-	/**
-	 * 产品id
-	 */
-	private Long productId;
+	private Long workFlowId;
 }

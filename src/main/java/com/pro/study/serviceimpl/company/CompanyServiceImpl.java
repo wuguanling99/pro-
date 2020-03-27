@@ -61,6 +61,8 @@ import com.pro.study.vo.response.sys.SysResponseVO;
 import com.pro.study.vo.response.workflow.NodeResponseVO;
 import com.pro.study.vo.response.workflow.RuleFieldReponseVO;
 import com.pro.study.vo.response.workflow.WorkFLowResponseVO;
+import com.pro.study.vo.response.workflow.WorkFlowAndNodeResponseVO;
+import com.pro.study.vo.response.workflow.WorkFlowNodeVO;
 
 /** 
 * @author: wgl
@@ -304,6 +306,7 @@ public class CompanyServiceImpl implements CompanyService{
 			ruleFieldDTO.setCompanyId(user.getUserId());
 			ruleFieldDTO.setFieldName(fieldName);
 			ruleFieldDTO.setJsonPath(jsonPath);
+			ruleFieldDTO.setProductId(ruleField.getProductId());
 			//添加规则字段
 			workFlowDao.insertRuleField(ruleFieldDTO);
 			//添加规则字典
@@ -405,6 +408,37 @@ public class CompanyServiceImpl implements CompanyService{
 			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"产品修改成功");
 		}catch (Exception e) {
 			return new SysResponseVO(SysDicEnum.ERROR.getCode(),"产品修改失败");
+		}
+	}
+	
+	/**
+	 * 根据产品id查询对应的工作流和工作流对应的节点
+	 */
+	@Override
+	public SysListResponseVO getWorkFlowNodeByProductId(UserInfoDTO user, Long productId) {
+		try {
+			List<WorkFlowAndNodeResponseVO> data = new ArrayList<WorkFlowAndNodeResponseVO>();
+			List<WorkFlowDTO> workFlowList = companyDao.findWorkFlowByProductId(productId,SysDicEnum.SYS_VALID.getCode());
+			for (WorkFlowDTO workFlowDTO : workFlowList) {
+				WorkFlowAndNodeResponseVO workFlow = new WorkFlowAndNodeResponseVO();
+				workFlow.setId(workFlowDTO.getId());
+				workFlow.setWorkFlowName(workFlowDTO.getWorkflowName());
+				//查询对应的节点
+				List<NodeDTO> nodeList = companyDao.findNodeListByWorkFlowId(workFlowDTO.getId());
+				List<WorkFlowNodeVO> nodeReponseList = new ArrayList<WorkFlowNodeVO>();
+				for (NodeDTO indexNode : nodeList) {
+					WorkFlowNodeVO node = new WorkFlowNodeVO();
+					node.setId(indexNode.getId());
+					node.setName(indexNode.getName());
+					nodeReponseList.add(node);
+				}
+				workFlow.setNodeData(nodeReponseList);
+				data.add(workFlow);
+			}
+			return new SysListResponseVO(SysDicEnum.SUCCESS.getCode(),"数据获取成功",data);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new SysListResponseVO(SysDicEnum.ERROR.getCode(),"数据获取失败",null);
 		}
 	}
 }

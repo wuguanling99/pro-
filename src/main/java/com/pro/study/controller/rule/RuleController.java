@@ -15,6 +15,7 @@ import com.pro.study.service.rule.RuleService;
 import com.pro.study.utils.UserUtils;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.RuleAndBodyRequestVO;
+import com.pro.study.vo.request.workflow.RulePage;
 import com.pro.study.vo.response.company.RuleFieldAndDicReponseVO;
 import com.pro.study.vo.response.sys.Page;
 import com.pro.study.vo.response.sys.SysListResponseVO;
@@ -40,9 +41,9 @@ public class RuleController{
 	* 方法返回值: @return
 	 */
 	@GetMapping("/getAllRuleField")
-	public SysListResponseVO<RuleFieldAndDicReponseVO> getAllRuleField(HttpServletRequest request) {
+	public SysListResponseVO<RuleFieldAndDicReponseVO> getAllRuleField(HttpServletRequest request,@RequestParam("productId")Long productId) {
 		UserInfoDTO user = UserUtils.getUser(request);
-		return ruleService.getAllRuleField(user);
+		return ruleService.getAllRuleField(user,productId);
 	}
 	
 	/**
@@ -98,5 +99,18 @@ public class RuleController{
 	public SysResponseVO deleteRule(HttpServletRequest request,@RequestParam("ruleId")Long id) {  
 		UserInfoDTO user = UserUtils.getUser(request);
 		return ruleService.deleteRule(user,id);
+	}
+	
+	
+	
+	/**
+	 * 
+	* @Description:（查询所有未建立管理关系的规则）  
+	* 方法返回值: @return
+	 */
+	@GetMapping("/getRuleByLinkPage")
+	public Page getRuleByLinkPage(HttpServletRequest request,@RequestBody RulePage page) {  
+		UserInfoDTO user = UserUtils.getUser(request);
+		return ruleService.getRuleByLinkPage(user,page);
 	}
 }

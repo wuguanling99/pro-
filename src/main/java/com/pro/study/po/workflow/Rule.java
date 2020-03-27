@@ -26,6 +26,13 @@ import lombok.Data;
 @org.hibernate.annotations.Table(appliesTo = "pro_rule",comment = "规则实体")
 public class Rule extends BasePojo{
 	
+	
+	/**
+	 * 规则名
+	 */
+	@Column(name = "product_id",nullable=false,columnDefinition="bigint(255) default 0 COMMENT '产品id'")
+	private Long productId;
+	
 	/**
 	 * 规则名
 	 */
@@ -49,4 +56,10 @@ public class Rule extends BasePojo{
 	 */
 	@Column(name = "rule_body",nullable=false,columnDefinition="text(500) COMMENT '规则实体'")
 	private String ruleBody;
+	
+	/**
+	 * 工作流id
+	 */
+	@Column(name = "workflow_id",columnDefinition="bigint(255) COMMENT '工作流id'")
+	private Long workFlowId;
 }

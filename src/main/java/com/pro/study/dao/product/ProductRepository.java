@@ -12,5 +12,14 @@ import com.pro.study.po.product.Product;
 * @Description: 产品数据层
 */
 public interface ProductRepository extends JpaSpecificationExecutor<Product>, CrudRepository<Product, Long> {
+	
+	/**
+	 * 
+	* @Description:（根据id和删除标志查询产品） 
+	* 方法返回值: @param productId
+	* 方法返回值: @param code
+	* 方法返回值: @return
+	 */
+	Product findByIdAndDeleteFlag(Long productId, Integer code);
 
 }

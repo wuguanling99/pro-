@@ -143,5 +143,14 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	SysResponseVO updateProductInfo(UserInfoDTO user, ProductRequestVO product);
+	
+	/**
+	 * 
+	* @Description:（根据产品Id查询对应的工作流节点） 
+	* 方法返回值: @param user
+	* 方法返回值: @param productId
+	* 方法返回值: @return
+	 */
+	SysListResponseVO getWorkFlowNodeByProductId(UserInfoDTO user, Long productId);
 
 }

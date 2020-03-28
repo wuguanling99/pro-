@@ -58,8 +58,8 @@ public class Rule extends BasePojo{
 	private String ruleBody;
 	
 	/**
-	 * 工作流id
+	 * 工作流节点id
 	 */
-	@Column(name = "workflow_id",columnDefinition="bigint(255) COMMENT '工作流id'")
-	private Long workFlowId;
+	@Column(name = "node_id",columnDefinition="bigint(255) COMMENT '工作流节点id'")
+	private Long ruleId;
 }

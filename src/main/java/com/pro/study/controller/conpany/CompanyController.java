@@ -20,6 +20,7 @@ import com.pro.study.vo.request.product.ProductRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
+import com.pro.study.vo.request.workflow.RulePage;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
@@ -192,9 +193,21 @@ public class CompanyController{
 	* 方法返回值: @return
 	 */
 	@GetMapping("/getAllOutInterface")
-	public Page getAllOutInterface(HttpServletRequest request,@RequestParam("productId")Long productId){
-		return companyService.getAllOutInterface(UserUtils.getUser(request),productId);
+	public Page getAllOutInterface(HttpServletRequest request,@RequestBody RulePage page){
+		return companyService.getAllOutInterface(UserUtils.getUser(request),page);
 	}
+	
+	/**
+	 * 
+	* @Description:（接口启停）  
+	* 方法返回值: @return
+	 */
+	@GetMapping("/enableOrStopInterface")
+	public SysResponseVO enableOrStopInterface(HttpServletRequest request,@RequestParam("interfaceId")Long interfaceId,@RequestParam("productId")Long productId,@RequestParam("nodeId")Long nodeId) {  
+		UserInfoDTO user = UserUtils.getUser(request);
+		return companyService.enableOrStopInterface(user,interfaceId,productId,nodeId);
+	}
+	
 	//==================================审核员================================================
 	/**
 	 * 

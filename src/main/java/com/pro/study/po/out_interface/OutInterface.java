@@ -21,6 +21,9 @@ import lombok.Data;
 @org.hibernate.annotations.Table(appliesTo = "out_interface",comment = "外部数据接口表")
 public class OutInterface extends BasePojo{
 	
+	@Column(name = "company_name",nullable = false,columnDefinition="varchar(255) COMMENT '提供接口的公司'")
+	private String companyName;
+	
 	/**
 	 * 接口编码
 	 */
@@ -66,6 +69,6 @@ public class OutInterface extends BasePojo{
 	/**
 	 * 扣费金额
 	 */
-	@Column(name = "one_cost",nullable = false,columnDefinition="int(10) COMMENT '扣费金额'")
-	private Integer one_cost;
+	@Column(name = "one_cost",nullable = false,columnDefinition="double(5) COMMENT '扣费金额'")
+	private Double one_cost;
 }

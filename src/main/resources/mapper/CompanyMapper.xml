@@ -131,7 +131,7 @@
 		`id`,
 		`rule_name` AS ruleName,
 		`rule_describe` AS ruleDescribe,
-		`workflow_id` AS  workFlowId
+		`node_id` AS  nodeId
 		FROM 
 		`pro_rule` 
 		WHERE 
@@ -152,4 +152,70 @@
 		OR 
 		product_id = #{productId} 
     </select>
+    
+    <select id="getAllOutInterface" resultType="com.pro.study.dto.sys.OutInterfaceDTO">
+    	SELECT * 
+    	FROM 
+    	`out_interface` AS interface 
+    	LEFT JOIN 
+    	`interface_product_link` AS link 
+    	ON 
+    	interface.id = link.interface_id 
+    	AND 
+    	link.node_id = #{nodeId} 
+    	AND 
+    	link.product_id =#{productId} 
+    	ORDER BY  
+    	company_name
+    	LIMIT #{limitStart},#{limitEnd} 
+    </select>
+    
+    <select id="countAllInterface" resultType = "java.lang.Integer">
+    	SELECT  
+    	count(id)
+    	FROM 
+    	`out_interface`
+    </select>
+    <select id="findRuleByProductIdAndNodeIdAndRuleId" resultType="java.lang.Integer">
+    	SELECT node_id FROM `pro_rule` WHERE `node_id` = #{nodeId} AND `product_id` = #{productId} AND id = #{ruleId}
+    </select>
+    <update id="updateRuleLinkType">
+    	UPDATE 
+    	`pro_rule` 
+    	SET 
+    	`node_id` = NULL 
+    	WHERE 
+    	id= #{ruleId} 
+    </update>
+    
+    <update id="updateSetLinkInfoOnRule">
+    	UPDATE 
+    	`pro_rule` 
+    	SET 
+    	`node_id` = #{nodeId} 
+    	WHERE 
+    	id= #{ruleId} 
+    </update>
+    
+    <select id="findLinkInfoByNodeIdAndInterfaceId" resultType="java.lang.Integer">
+    	SELECT 
+    	id 
+    	FROM `interface_product_link` 
+    	WHERE 
+    	interface_id = #{interfaceId} 
+    	AND 
+    	node_id = #{nodeId}
+    </select>
+    
+    <insert id="enableInterfaceLink">
+    	INSERT INTO 
+    	`interface_product_link` 
+    	(`interface_id`,`node_id`,`product_id`) 
+    	VALUES 
+    	(#{interfaceId},#{nodeId},#{productId})
+    </insert>
+    
+    <delete id="stopInterfaceLink">
+    	DELETE FROM `interface_product_link`  WHERE `node_id` = #{nodeId}
+    </delete>
 </mapper>

@@ -30,6 +30,7 @@ import com.pro.study.dto.company.LocationMapDto;
 import com.pro.study.dto.company.ProductDetailDTO;
 import com.pro.study.dto.company.ProductDto;
 import com.pro.study.dto.sys.LimitDto;
+import com.pro.study.dto.sys.OutInterfaceDTO;
 import com.pro.study.dto.user.UserInfoDTO;
 import com.pro.study.dto.workflow.NodeAndNextNodeDTO;
 import com.pro.study.dto.workflow.NodeDTO;
@@ -49,6 +50,7 @@ import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.RuleFieldDicVO;
 import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
+import com.pro.study.vo.request.workflow.RulePage;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
@@ -439,6 +441,44 @@ public class CompanyServiceImpl implements CompanyService{
 		}catch (Exception e) {
 			e.printStackTrace();
 			return new SysListResponseVO(SysDicEnum.ERROR.getCode(),"数据获取失败",null);
+		}
+	}
+	
+	
+	/**
+	 * 获取所有的外部数据接口
+	 */
+	@Override
+	public Page getAllOutInterface(UserInfoDTO user, RulePage page) {
+		try {
+			LimitDto limit = Page.getLimit(page.getPageNum(), page.getPageSize());
+			List<OutInterfaceDTO> outInterface = companyDao.getAllOutInterface(page.getProductId(),page.getNodeId(),limit.getLimitStart(),limit.getLimitEnd());
+			Integer total = companyDao.countAllInterface();
+			Integer totalPageNo = Page.getTotalPageNo(total, page.getPageSize());
+			return new Page(SysDicEnum.SUCCESS.getCode(),"数据获取成功",page.getPageNum(),page.getPageSize(),total,totalPageNo,outInterface);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return Page.fail();
+		}
+	}
+	
+	
+	/**
+	 * 外部数据接口与工作流节点关联关系管理
+	 */
+	@Override
+	public SysResponseVO enableOrStopInterface(UserInfoDTO user, Long interfaceId, Long productId, Long nodeId) {
+		try {
+			Integer id = companyDao.findLinkInfoByNodeIdAndInterfaceId(nodeId,interfaceId);
+			if(id==null) {
+				companyDao.enableInterfaceLink(nodeId,interfaceId,productId);
+			}else {
+				companyDao.stopInterfaceLink(nodeId);
+			}
+			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"接口关联修改成功");
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new SysResponseVO(SysDicEnum.ERROR.getCode(),"接口关联修改失败");
 		}
 	}
 }

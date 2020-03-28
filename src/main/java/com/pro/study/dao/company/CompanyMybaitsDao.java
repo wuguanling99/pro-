@@ -9,6 +9,7 @@ import com.pro.study.dto.company.CompanyLoanerLocationDto;
 import com.pro.study.dto.company.ProductDetailDTO;
 import com.pro.study.dto.company.ProductDto;
 import com.pro.study.dto.sys.LimitDto;
+import com.pro.study.dto.sys.OutInterfaceDTO;
 import com.pro.study.dto.workflow.NodeDTO;
 import com.pro.study.dto.workflow.RuleDTO;
 import com.pro.study.dto.workflow.RuleFieldAndDicDTO;
@@ -133,7 +134,7 @@ public interface CompanyMybaitsDao {
 	* 方法返回值: @return
 	 */
 	public List<RuleLinkDTO> getAllRuleLinkInfo(@Param("productId")Long productId, 
-			@Param("workflowId")Long workflowId, 
+			@Param("nodeId")Long nodeId, 
 			@Param("limitStart")Integer limitStart, 
 			@Param("limitEnd")Integer limitEnd);
 	
@@ -146,5 +147,74 @@ public interface CompanyMybaitsDao {
 	 */
 	public Integer countRuleByProductIdAndWorkFlowId(@Param("productId")Long productId, @Param("workflowId")Long workflowId);
 	
+	/**
+	 * 
+	* @Description:（获取外部接口信息） 
+	* 方法返回值: @param companyId
+	* 方法返回值: @param limitStart
+	* 方法返回值: @param limitEnd
+	* 方法返回值: @return
+	 */
+	public List<OutInterfaceDTO> getAllOutInterface(@Param("productId")Long productId,@Param("nodeId")Long nodeId,@Param("limitStart") Integer limitStart,@Param("limitEnd") Integer limitEnd);
 	
+	/**
+	 * 
+	* @Description:（统计所有的接口） 
+	* 方法返回值: @return
+	 */
+	public Integer countAllInterface();
+	
+	/**
+	 * 查询是否有管理关系
+	* @Description:（方法功能描述） 
+	* 方法返回值: @param ruleId
+	* 方法返回值: @param productId
+	* 方法返回值: @param nodeId
+	* 方法返回值: @return
+	 */
+	public Integer findRuleByProductIdAndNodeIdAndRuleId(@Param("ruleId")Long ruleId,@Param("productId") Long productId,@Param("nodeId") Long nodeId);
+	
+	/**
+	 * 
+	* @Description:（取消规则和节点的关联关系） 
+	* 方法返回值: @param ruleId
+	* 方法返回值: @param productId
+	* 方法返回值: @param nodeId
+	 */
+	public void updateRuleLinkType(@Param("ruleId")Long ruleId);
+	
+	/**
+	 * 
+	* @Description:（建立规则和节点的关联关系） 
+	* 方法返回值: @param ruleId
+	* 方法返回值: @param productId
+	* 方法返回值: @param nodeId
+	 */
+	public void updateSetLinkInfoOnRule(@Param("ruleId")Long ruleId);
+
+	/**
+	 * 
+	* @Description:（查询接口和工作流节点关联关系） 
+	* 方法返回值: @param nodeId
+	* 方法返回值: @param interfaceId
+	* 方法返回值: @return
+	 */
+	public Integer findLinkInfoByNodeIdAndInterfaceId(@Param("nodeId")Long nodeId,@Param("interfaceId") Long interfaceId);
+	
+	/**
+	 * 
+	* @Description:（建立外部接口和工作流节点的关系） 
+	* 方法返回值: @param long1
+	* 方法返回值: @param interfaceId
+	* 方法返回值: @param productId
+	 */
+	public void enableInterfaceLink(@Param("nodeId")Long nodeId, @Param("interfaceId")Long interfaceId, @Param("productId")Long productId);
+	
+	/**
+	 * 
+	* @Description:（删除外部接口和工作流节点的关系） 
+	* 方法返回值: @param nodeId
+	 */
+	public void stopInterfaceLink(@Param("nodeId")Long nodeId);
+
 }

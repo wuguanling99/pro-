@@ -34,5 +34,5 @@ public class RuleLinkDTO {
 	/**
 	 * 关联的工作流id
 	 */
-	private Long workFlowId;
+	private Long nodeId;
 }

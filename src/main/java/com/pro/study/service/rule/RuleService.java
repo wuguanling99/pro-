@@ -74,5 +74,16 @@ public interface RuleService {
 	* 方法返回值: @return
 	 */
 	Page getRuleByLinkPage(UserInfoDTO user, RulePage page);
+	
+	/**
+	 * 
+	* @Description:（分配规则启停） 
+	* 方法返回值: @param user
+	* 方法返回值: @param ruleId
+	* 方法返回值: @param productId
+	* 方法返回值: @param nodeId
+	* 方法返回值: @return
+	 */
+	SysResponseVO enableOrStopRule(UserInfoDTO user, Long ruleId, Long productId, Long nodeId);
 
 }

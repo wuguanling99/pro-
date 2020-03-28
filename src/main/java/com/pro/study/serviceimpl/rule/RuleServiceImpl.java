@@ -186,21 +186,41 @@ public class RuleServiceImpl implements RuleService {
 		try {
 			LimitDto limit = Page.getLimit(page.getPageNum(),page.getPageSize());
 			List<RuleLinkResponseVO> data = new ArrayList<RuleLinkResponseVO>();
-			List<RuleLinkDTO> ruleList = companyDao.getAllRuleLinkInfo(page.getProductId(),page.getWorkflowId(),limit.getLimitStart(),limit.getLimitEnd());
+			List<RuleLinkDTO> ruleList = companyDao.getAllRuleLinkInfo(page.getProductId(),page.getNodeId(),limit.getLimitStart(),limit.getLimitEnd());
 			for (RuleLinkDTO ruleDTO : ruleList) {
 				RuleLinkResponseVO index = new RuleLinkResponseVO();
-				index.setLinkType(ruleDTO.getWorkFlowId() == null ? SysDicEnum.RULE_DONT_LINK.getCode():SysDicEnum.RULE_LINK.getCode());
+				index.setLinkType(ruleDTO.getNodeId() == null ? SysDicEnum.RULE_DONT_LINK.getCode():SysDicEnum.RULE_LINK.getCode());
 				index.setRuleName(index.getRuleName());
 				index.setRuleId(index.getRuleId());
 				index.setRuleDescribe(index.getRuleDescribe());
 				data.add(index);
 			}
-			Integer count = companyDao.countRuleByProductIdAndWorkFlowId(page.getProductId(),page.getWorkflowId());
+			Integer count = companyDao.countRuleByProductIdAndWorkFlowId(page.getProductId(),page.getNodeId());
 			Integer totalPageNo = Page.getTotalPageNo(count, page.getPageSize());
 			return 	new Page(SysDicEnum.SUCCESS.getCode(),"数据获取成功",page.getPageNum(),page.getPageSize(),count,totalPageNo,data);
 		}catch (Exception e) {
 			e.printStackTrace();
 			return Page.fail();
+		}
+	}
+
+	
+	/**
+	 * 规则起停
+	 */
+	@Override
+	public SysResponseVO enableOrStopRule(UserInfoDTO user, Long ruleId, Long productId, Long nodeId) {
+		try {
+			Integer linkId = companyDao.findRuleByProductIdAndNodeIdAndRuleId(ruleId,productId,nodeId);
+			if(linkId == null) {
+				companyDao.updateSetLinkInfoOnRule(ruleId);
+			}else {
+				companyDao.updateRuleLinkType(ruleId);
+			}
+			return new SysResponseVO(SysDicEnum.SUCCESS.getCode(),"数据修改成功");
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new SysResponseVO(SysDicEnum.ERROR.getCode(),"数据修改失败");
 		}
 	}
 }

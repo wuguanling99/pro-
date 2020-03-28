@@ -16,11 +16,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RulePage {
 	
+	/**
+	 * 产品id
+	 */
 	private Long productId;
 	
-	private Long workflowId;
-
+	/**
+	 * 节点id
+	 */
+	private Long nodeId;
+		
+	/**
+	 * 当前页
+	 */
 	private Integer pageNum;
 
+	/**
+	 * 每页条数
+	 */
 	private Integer pageSize;
 }

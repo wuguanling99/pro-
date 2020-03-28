@@ -11,6 +11,7 @@ import com.pro.study.vo.request.product.ProductRequestVO;
 import com.pro.study.vo.request.sys.PageInfo;
 import com.pro.study.vo.request.workflow.NodeRequestVO;
 import com.pro.study.vo.request.workflow.RuleFieldRequestVO;
+import com.pro.study.vo.request.workflow.RulePage;
 import com.pro.study.vo.request.workflow.WorkFlowRequestVO;
 import com.pro.study.vo.response.company.CheckLoanFormReponseVO;
 import com.pro.study.vo.response.company.CompanyResponseVO;
@@ -152,5 +153,27 @@ public interface CompanyService {
 	* 方法返回值: @return
 	 */
 	SysListResponseVO getWorkFlowNodeByProductId(UserInfoDTO user, Long productId);
+	
+	/**
+	 * 
+	* @Description:（获取所有的外部数据接口） 
+	* 方法返回值: @param user
+	* 方法返回值: @param page
+	* 方法返回值: @return
+	 */
+	Page getAllOutInterface(UserInfoDTO user, RulePage page);
+	
+	
+	
+	/**
+	 * 
+	* @Description:（外部接口关联关系管理） 
+	* 方法返回值: @param user
+	* 方法返回值: @param interfaceId
+	* 方法返回值: @param productId
+	* 方法返回值: @param nodeId
+	* 方法返回值: @return
+	 */
+	SysResponseVO enableOrStopInterface(UserInfoDTO user, Long interfaceId, Long productId, Long nodeId);
 
 }

@@ -108,9 +108,10 @@ public class RuleController{
 	* @Description:（查询所有未建立管理关系的规则）  
 	* 方法返回值: @return
 	 */
-	@GetMapping("/getRuleByLinkPage")
-	public Page getRuleByLinkPage(HttpServletRequest request,@RequestBody RulePage page) {  
+	@GetMapping("/enableOrStopRule")
+	public SysResponseVO enableOrStopRule(HttpServletRequest request,@RequestParam("ruleId")Long ruleId,@RequestParam("productId")Long productId,@RequestParam("nodeId")Long nodeId) {  
 		UserInfoDTO user = UserUtils.getUser(request);
-		return ruleService.getRuleByLinkPage(user,page);
+		return ruleService.enableOrStopRule(user,ruleId,productId,nodeId);
 	}
+	
 }
